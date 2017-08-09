@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 		std::map<std::string, Gadget*> unique_gadgets = only_unique_gadgets(all_gadgets);
 		/* Now we walk the gadgets found and set the VA */
 		for(std::map<std::string, Gadget*>::iterator it = unique_gadgets.begin(); it != unique_gadgets.end(); ++it)	{                
-      //write to file here III
+      //write to file here IIII
 			/* Avoid mem leaks */
 			delete it->second;
 		}
