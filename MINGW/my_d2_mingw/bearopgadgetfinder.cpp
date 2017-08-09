@@ -17,9 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with rp++.  If not, see <http://www.gnu.org/licenses/>.
 */
+#define BEA_ENGINE_STATIC
+#define BEA_USE_STDCALL
 #include "bearopgadgetfinder.hpp"
 #include "safeint.hpp"
-
 #include <iostream>
 #include <cstring>
 

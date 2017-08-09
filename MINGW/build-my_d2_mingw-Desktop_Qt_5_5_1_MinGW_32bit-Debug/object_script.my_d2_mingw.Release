@@ -8,7 +8,6 @@ INPUT(
 ./release\gadget.o
 ./release\instruction.o
 ./release\macho.o
-./release\main.o
 ./release\pe.o
 ./release\program.o
 ./release\raw.o

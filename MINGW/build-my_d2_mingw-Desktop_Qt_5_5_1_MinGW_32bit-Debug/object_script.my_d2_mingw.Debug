@@ -8,7 +8,6 @@ INPUT(
 ./debug\gadget.o
 ./debug\instruction.o
 ./debug\macho.o
-./debug\main.o
 ./debug\pe.o
 ./debug\program.o
 ./debug\raw.o

@@ -30,7 +30,7 @@
 #define BEA_ENGINE_STATIC
 #define BEA_USE_STDCALL
 
-int main(int argc, char* argv[]) { 
+int main() {
 	std::string program_path("calc.exe");
 	CPU::E_CPU arch(CPU::CPU_UNKNOWN);
 	arch = CPU::CPU_x86;

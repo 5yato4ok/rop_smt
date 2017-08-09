@@ -18,7 +18,6 @@ SOURCES += main.cpp \
     gadget.cpp \
     instruction.cpp \
     macho.cpp \
-    main.cpp \
     pe.cpp \
     program.cpp \
     raw.cpp \
@@ -71,4 +70,4 @@ INCLUDEPATH += $$PWD/include \
                $$PWD/inc
 DEPENDPATH += $$PWD/include
 
-LIBS += $$PWD/lib/BeaEngine_s_d_l.lib
+LIBS += $$PWD/lib/libBeaEngine_s_d_l.a
