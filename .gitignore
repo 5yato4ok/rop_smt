@@ -31,12 +31,14 @@
 
 #Additional
 *.suo
+*.pdb
 *.user
 *.useroscache
 *.sln.docstates
 *.userprefs
 *.sdf
 *.opensdf
+*.opendb
 *.VC.db
 [Dd]ebug/
 [Rr]elease/
