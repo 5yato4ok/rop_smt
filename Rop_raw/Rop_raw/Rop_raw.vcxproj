@@ -88,6 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>inc/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,10 +144,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="executable_format.cpp" />
     <ClCompile Include="Rop.cpp" />
     <ClCompile Include="Rop_raw.cpp" />
+    <ClCompile Include="section.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="inc\beaengine.h" />
+    <ClInclude Include="inc\executable_format.hpp" />
+    <ClInclude Include="inc\pe_struct.hpp" />
+    <ClInclude Include="inc\safeint.hpp" />
+    <ClInclude Include="inc\section.hpp" />
     <ClInclude Include="Rop.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

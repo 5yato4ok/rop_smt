@@ -6,6 +6,9 @@ int main() {
   //get info (beaengine)
   //somehow make rop gadgets. watch python script
   //
+
+  std::fstream file("x86.exe");
+  ropperdis::Ropperdis test(file);
   return 0;
 }
 

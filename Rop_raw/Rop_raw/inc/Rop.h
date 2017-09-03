@@ -1,6 +1,5 @@
 #pragma once
 #include "beaengine.h"
-#include <executable_format.hpp>
 #include <fstream>
 
 #define BEA_ENGINE_STATIC
@@ -16,7 +15,6 @@ namespace ropperdis {
     Ropperdis(std::fstream& input);
     Rop_Info& find_rop();
   private:
-    ExecutableFormat* exec_info;
     std::fstream& input_file;
 
   };
