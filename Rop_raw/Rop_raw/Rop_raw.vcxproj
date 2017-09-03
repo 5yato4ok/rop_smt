@@ -146,7 +146,7 @@
   <ItemGroup>
     <ClCompile Include="executable_format.cpp" />
     <ClCompile Include="Rop.cpp" />
-    <ClCompile Include="Rop_raw.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="section.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -75,7 +75,7 @@ class Section {
       *   
       *  \param file: The file
       */
-    void dump(std::ifstream &file);
+    void dump(std::fstream &file);
 
     /*!
       *  \brief Set the properties of the section
@@ -84,7 +84,7 @@ class Section {
       */
     void set_props(Properties props);
     unsigned long long get_vaddr(void) const;
-    std::streampos get_file_size(std::ifstream &file);
+    std::streampos get_file_size(std::fstream &file);
 
   private:
 

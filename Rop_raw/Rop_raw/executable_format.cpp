@@ -11,7 +11,7 @@ std::string ExecutableFormat::get_class_name(void) {
   return std::string("x86");
 }
 
-ExecutableFormat::E_CPU ExecutableFormat::extract_information_from_binary(std::ifstream &file) {
+ExecutableFormat::E_CPU ExecutableFormat::extract_information_from_binary(std::fstream &file) {
     RP_IMAGE_DOS_HEADER imgDosHeader = {0};
     RP_IMAGE_NT_HEADERS32 imgNtHeaders32 = {0};
     E_CPU cpu = E_CPU::CPU_UNKNOWN;
@@ -68,7 +68,7 @@ ExecutableFormat::E_CPU ExecutableFormat::extract_information_from_binary(std::i
     return cpu;
 }
 
-std::vector<Section*> ExecutableFormat::get_executables_section(std::ifstream & file) {
+std::vector<Section*> ExecutableFormat::get_executables_section(std::fstream & file) {
   std::vector<Section*> exec_sections;
 
   for (std::vector<RP_IMAGE_SECTION_HEADER*>::iterator it = m_pPELayout->imgSectionHeaders.begin();

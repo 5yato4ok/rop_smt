@@ -256,7 +256,7 @@ struct PortableExecutableLayout {
   }
 
   virtual unsigned int get_nt_headers_size(void) const  = 0;
-  virtual void fill_nt_structures(std::ifstream &file)  = 0;
+  virtual void fill_nt_structures(std::fstream &file)  = 0;
   virtual unsigned long long get_image_base(void) const = 0;
 };
 
@@ -269,7 +269,7 @@ struct PELayout : public PortableExecutableLayout {
     return sizeof(RP_IMAGE_NT_HEADERS<T>);
   }
 
-  void fill_nt_structures(std::ifstream &file) {
+  void fill_nt_structures(std::fstream &file) {
     /* Remember where the caller was in the file */
     std::streampos off = file.tellg();
         

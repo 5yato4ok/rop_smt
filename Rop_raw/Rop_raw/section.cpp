@@ -43,7 +43,7 @@ void Section::set_props(Properties props) {
     m_props = props;
 }
 
-std::streampos Section::get_file_size(std::ifstream &file) {
+std::streampos Section::get_file_size(std::fstream &file) {
   std::streampos backup = file.tellg();
 
   file.seekg(0, std::ios::beg);
@@ -56,7 +56,7 @@ std::streampos Section::get_file_size(std::ifstream &file) {
   return fsize;
 }
 
-void Section::dump(std::ifstream &file)
+void Section::dump(std::fstream &file)
 {
     /* NB: std::streampos performs unsigned check */
     unsigned long long fsize = get_file_size(file);

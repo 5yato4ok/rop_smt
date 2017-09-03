@@ -24,15 +24,14 @@ class ExecutableFormat {
 
   explicit ExecutableFormat(void);
   std::string get_class_name(void);
-  std::vector<Section*> get_executables_section(std::ifstream & file);
-  E_CPU ExecutableFormat::extract_information_from_binary(std::ifstream &file);
+  std::vector<Section*> get_executables_section(std::fstream & file);
+  E_CPU ExecutableFormat::extract_information_from_binary(std::fstream &file);
   template<class T>
   void init_properly_PELayout() {
     m_pPELayout = new (std::nothrow) PELayout<T>;
     if (m_pPELayout == NULL)
       printf("m_PELayout allocation failed");
   }
-
   PortableExecutableLayout* m_pPELayout;
 };
 
