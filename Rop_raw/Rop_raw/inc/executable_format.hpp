@@ -16,8 +16,8 @@ class ExecutableFormat {
     FORMAT_UNKNOWN
  };
   enum E_CPU {
-    CPU_x86, /*!< x86 */
-    CPU_x64, /*!< x64 */
+    CPU_x86 = 0, /*!< x86 */
+    CPU_x64 = 64, /*!< x64 */
     CPU_UNKNOWN /*!< unknown cpu */
   };
 

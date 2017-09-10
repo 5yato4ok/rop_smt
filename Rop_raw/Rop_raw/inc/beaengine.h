@@ -1,5 +1,8 @@
 #ifndef _BEA_ENGINE_
 #define _BEA_ENGINE_
+
+#define BEA_ENGINE_STATIC
+#define BEA_USE_STDCALL
 #if  defined(__cplusplus) && defined(__BORLANDC__)
 namespace BeaEngine {
 #endif

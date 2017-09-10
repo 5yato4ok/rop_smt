@@ -11,7 +11,7 @@ int main() {
   ropperdis::Ropperdis mngr(file);
   std::vector<int> result_gadgets;
   if (mngr.initialized()) {
-    mngr.find_rop();
+    std::multiset<Gadget*, Gadget::Sort>  result = mngr.find_rop();
   }
 
   return 0;
