@@ -17,7 +17,8 @@ class Ropperdis {
   Rop_Info& find_rop();
   bool initialized() { return initialized_; }
  private:
-  PortableExecutableLayout* exec_info;
+  ExecutableFormat  exe_info;
+  std::vector<Section*> exe_sections;
   bool init();
   bool initialized_ = false;
   std::fstream& input_file;

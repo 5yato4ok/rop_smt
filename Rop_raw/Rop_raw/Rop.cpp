@@ -4,6 +4,9 @@ namespace ropperdis {
 Rop_Info & Ropperdis::find_rop() {
   // TODO: insert return statement here
   Rop_Info test;
+  std::vector<Section*> executable_sections = exe_info.get_executables_section(input_file);
+  if (executable_sections.size() == 0)
+    std::cout << "It seems your binary haven't executable sections." << std::endl;
   return test;
 }
 Ropperdis::Ropperdis(std::fstream& input) :input_file(input) {
@@ -15,12 +18,11 @@ Ropperdis::Ropperdis(std::fstream& input) :input_file(input) {
 };
 
 bool Ropperdis::init() {
-  ExecutableFormat tmp;
-  if (tmp.extract_information_from_binary(input_file) == ExecutableFormat::CPU_UNKNOWN) {
+  if (exe_info.extract_information_from_binary(input_file) == ExecutableFormat::CPU_UNKNOWN) {
     printf("ERROR while extracting info");
     return false;
   }
-  exec_info = tmp.m_pPELayout;
+  //exec_info = tmp.m_pPELayout;
   return true;
 }
 }
