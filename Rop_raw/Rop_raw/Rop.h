@@ -2,19 +2,16 @@
 #include "beaengine.h"
 #include <executable_format.hpp>
 #include <fstream>
-
+#include "gadget.hpp"
 #define BEA_ENGINE_STATIC
 #define BEA_USE_STDCALL
 
-namespace ropperdis {
-struct Rop_Info {
-
-};
+namespace ropperdis{
 
 class Ropperdis {
  public:
   Ropperdis(std::fstream& input);
-  Rop_Info& find_rop();
+  void find_rop();
   bool initialized() { return initialized_; }
  private:
   ExecutableFormat  exe_info;
@@ -24,4 +21,5 @@ class Ropperdis {
   std::fstream& input_file;
 
 };
+
 }//namespace ropperdis

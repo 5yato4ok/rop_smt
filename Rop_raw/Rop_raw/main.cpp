@@ -9,7 +9,7 @@ int main() {
 
   std::fstream file("x86.exe");
   ropperdis::Ropperdis mngr(file);
-  std::vector <ropperdis::Rop_Info> result_gadgets;
+  std::vector<int> result_gadgets;
   if (mngr.initialized()) {
     mngr.find_rop();
   }

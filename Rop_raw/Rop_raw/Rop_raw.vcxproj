@@ -145,6 +145,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="executable_format.cpp" />
+    <ClCompile Include="gadget.cpp" />
+    <ClCompile Include="instruction.cpp" />
     <ClCompile Include="Rop.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="section.cpp" />
@@ -152,6 +154,8 @@
   <ItemGroup>
     <ClInclude Include="inc\beaengine.h" />
     <ClInclude Include="inc\executable_format.hpp" />
+    <ClInclude Include="inc\gadget.hpp" />
+    <ClInclude Include="inc\instruction.hpp" />
     <ClInclude Include="inc\pe_struct.hpp" />
     <ClInclude Include="inc\safeint.hpp" />
     <ClInclude Include="inc\section.hpp" />
