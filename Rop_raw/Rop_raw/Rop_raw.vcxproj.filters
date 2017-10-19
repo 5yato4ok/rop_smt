@@ -1,72 +1,69 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="exec_description">
+      <UniqueIdentifier>{cad3c0f8-0859-45cc-9683-16e8ad190784}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gadget">
+      <UniqueIdentifier>{8e5ad0a4-648d-4978-8d25-4cc16ee87b52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="unicorn_emulator">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="rop_mngr">
+      <UniqueIdentifier>{191dd618-1b9c-403e-a490-e4a52e263aa8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Rop.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="executable_format.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>exec_description</Filter>
     </ClCompile>
     <ClCompile Include="section.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>exec_description</Filter>
     </ClCompile>
     <ClCompile Include="gadget.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>gadget</Filter>
     </ClCompile>
     <ClCompile Include="instruction.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>gadget</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Emulator.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>unicorn_emulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Rop.cpp">
+      <Filter>rop_mngr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Rop.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Emulator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="elf_struct.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="executable_format.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="gadget.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="instruction.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pe_struct.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="safeint.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>exec_description</Filter>
     </ClInclude>
     <ClInclude Include="section.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>exec_description</Filter>
+    </ClInclude>
+    <ClInclude Include="elf_struct.hpp">
+      <Filter>exec_description</Filter>
     </ClInclude>
     <ClInclude Include="elf.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>exec_description</Filter>
+    </ClInclude>
+    <ClInclude Include="pe_struct.hpp">
+      <Filter>exec_description</Filter>
+    </ClInclude>
+    <ClInclude Include="gadget.hpp">
+      <Filter>gadget</Filter>
+    </ClInclude>
+    <ClInclude Include="instruction.hpp">
+      <Filter>gadget</Filter>
+    </ClInclude>
+    <ClInclude Include="Emulator.h">
+      <Filter>unicorn_emulator</Filter>
+    </ClInclude>
+    <ClInclude Include="safeint.hpp" />
+    <ClInclude Include="Rop.h">
+      <Filter>rop_mngr</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
