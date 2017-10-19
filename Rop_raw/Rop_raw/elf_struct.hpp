@@ -109,23 +109,23 @@ struct Elf_Phdr<x86Version>
     unsigned int p_flags;
     unsigned int p_align;
 
-    void display(VerbosityLevel lvl = VERBOSE_LEVEL_1) const
-    {
-        w_yel_lf("-> Elf_Phdr32: ");
-        std::cout << "    " << type_to_str(p_type) << " " << flags_to_str(p_flags) << std::endl;
+    //void display(VerbosityLevel lvl = VERBOSE_LEVEL_1) const
+    //{
+    //    w_yel_lf("-> Elf_Phdr32: ");
+    //    std::cout << "    " << type_to_str(p_type) << " " << flags_to_str(p_flags) << std::endl;
 
-        if(lvl > VERBOSE_LEVEL_1)
-        {
-            display_hex_2fields_lf(p_vaddr, p_filesz);
-        }
+    //    if(lvl > VERBOSE_LEVEL_1)
+    //    {
+    //        display_hex_2fields_lf(p_vaddr, p_filesz);
+    //    }
 
-        if(lvl > VERBOSE_LEVEL_2)
-        {
-            display_hex_2fields_lf(p_align, p_flags);
-        }
+    //    if(lvl > VERBOSE_LEVEL_2)
+    //    {
+    //        display_hex_2fields_lf(p_align, p_flags);
+    //    }
 
-        display_hex_2fields_lf(p_offset, p_paddr);
-    }
+    //    display_hex_2fields_lf(p_offset, p_paddr);
+    //}
 }
 #ifdef LINUX
 __attribute__((packed))
@@ -144,23 +144,23 @@ struct Elf_Phdr<x64Version>
     unsigned long long p_memsz;
     unsigned long long p_align;
 
-    void display(VerbosityLevel lvl = VERBOSE_LEVEL_1) const
-    {
-        w_yel_lf("-> Elf_Phdr64:"); 
-        std::cout << "    " << type_to_str(p_type) << " " << flags_to_str(p_flags) << std::endl;
+    //void display(VerbosityLevel lvl = VERBOSE_LEVEL_1) const
+    //{
+    //    w_yel_lf("-> Elf_Phdr64:"); 
+    //    std::cout << "    " << type_to_str(p_type) << " " << flags_to_str(p_flags) << std::endl;
 
-        if(lvl > VERBOSE_LEVEL_1)
-        {
-            display_short_hex_2fields_lf(p_vaddr, p_filesz);
-        }
+    //    if(lvl > VERBOSE_LEVEL_1)
+    //    {
+    //        display_short_hex_2fields_lf(p_vaddr, p_filesz);
+    //    }
 
-        if(lvl > VERBOSE_LEVEL_2)
-        {
-            display_short_hex_2fields_lf(p_align, p_flags);
-        }
+    //    if(lvl > VERBOSE_LEVEL_2)
+    //    {
+    //        display_short_hex_2fields_lf(p_align, p_flags);
+    //    }
 
-        display_short_hex_2fields_lf(p_offset, p_paddr);
-    }
+    //    display_short_hex_2fields_lf(p_offset, p_paddr);
+    //}
 }
 #ifdef LINUX
 __attribute__((packed))
@@ -239,7 +239,7 @@ struct ExecutableLinkingFormatLayout
     {}
     
     virtual void fill_structures(std::ifstream &file) = 0;
-    virtual void display(VerbosityLevel lvl = VERBOSE_LEVEL_1) const = 0;
+    //virtual void display(VerbosityLevel lvl = VERBOSE_LEVEL_1) const = 0;
     virtual std::vector<Section*> get_executable_section(std::ifstream &file) const = 0;
 };
 
