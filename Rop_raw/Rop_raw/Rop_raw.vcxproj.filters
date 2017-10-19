@@ -16,18 +16,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="executable_format.cpp">
-      <Filter>exec_description</Filter>
-    </ClCompile>
-    <ClCompile Include="section.cpp">
-      <Filter>exec_description</Filter>
-    </ClCompile>
-    <ClCompile Include="gadget.cpp">
-      <Filter>gadget</Filter>
-    </ClCompile>
-    <ClCompile Include="instruction.cpp">
-      <Filter>gadget</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Emulator.cpp">
       <Filter>unicorn_emulator</Filter>
@@ -35,22 +23,25 @@
     <ClCompile Include="Rop.cpp">
       <Filter>rop_mngr</Filter>
     </ClCompile>
+    <ClCompile Include="gadget.cpp">
+      <Filter>gadget</Filter>
+    </ClCompile>
+    <ClCompile Include="instruction.cpp">
+      <Filter>gadget</Filter>
+    </ClCompile>
+    <ClCompile Include="executable_format.cpp">
+      <Filter>exec_description</Filter>
+    </ClCompile>
+    <ClCompile Include="section.cpp">
+      <Filter>exec_description</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="executable_format.hpp">
-      <Filter>exec_description</Filter>
+    <ClInclude Include="Emulator.h">
+      <Filter>unicorn_emulator</Filter>
     </ClInclude>
-    <ClInclude Include="section.hpp">
-      <Filter>exec_description</Filter>
-    </ClInclude>
-    <ClInclude Include="elf_struct.hpp">
-      <Filter>exec_description</Filter>
-    </ClInclude>
-    <ClInclude Include="elf.hpp">
-      <Filter>exec_description</Filter>
-    </ClInclude>
-    <ClInclude Include="pe_struct.hpp">
-      <Filter>exec_description</Filter>
+    <ClInclude Include="Rop.h">
+      <Filter>rop_mngr</Filter>
     </ClInclude>
     <ClInclude Include="gadget.hpp">
       <Filter>gadget</Filter>
@@ -58,12 +49,23 @@
     <ClInclude Include="instruction.hpp">
       <Filter>gadget</Filter>
     </ClInclude>
-    <ClInclude Include="Emulator.h">
-      <Filter>unicorn_emulator</Filter>
+    <ClInclude Include="elf.hpp">
+      <Filter>exec_description</Filter>
     </ClInclude>
-    <ClInclude Include="safeint.hpp" />
-    <ClInclude Include="Rop.h">
-      <Filter>rop_mngr</Filter>
+    <ClInclude Include="elf_struct.hpp">
+      <Filter>exec_description</Filter>
+    </ClInclude>
+    <ClInclude Include="executable_format.hpp">
+      <Filter>exec_description</Filter>
+    </ClInclude>
+    <ClInclude Include="pe_struct.hpp">
+      <Filter>exec_description</Filter>
+    </ClInclude>
+    <ClInclude Include="safeint.hpp">
+      <Filter>exec_description</Filter>
+    </ClInclude>
+    <ClInclude Include="section.hpp">
+      <Filter>exec_description</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
