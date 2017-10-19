@@ -15,6 +15,7 @@ class ExecutableFormat {
     FORMAT_ELF,
     FORMAT_UNKNOWN
  };
+  //TODO change here to unicorn exe info
   enum E_CPU {
     CPU_x86 = 0, /*!< x86 */
     CPU_x64 = 64, /*!< x64 */

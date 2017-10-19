@@ -7,7 +7,7 @@
 #include <map>
 
 #include "instruction.hpp"
-
+#include "Emulator.h"
 /*! \class Gadget
 *
 * A gadget is a sequence of instructions that ends by an ending instruction (ret/call/jmp)
@@ -92,7 +92,11 @@ public:
     }
   };
 
-private:
+  void analize();
+
+ private:
+  unicorny::Emulator emu;
+  bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
   unsigned int m_size; /*!< the size in byte of the gadget*/
   std::list<Instruction*> m_instructions; /*!< the list of the different instructions composing the gadget*/

@@ -9,11 +9,13 @@ int main() {
 
   std::fstream file("x86.exe");
   ropperdis::Ropperdis mngr(file);
-  std::vector<int> result_gadgets;
+  std::multiset<Gadget*, Gadget::Sort> result;
   if (mngr.initialized()) {
-    std::multiset<Gadget*, Gadget::Sort>  result = mngr.find_rop();
+    result = mngr.find_rop();
   }
-
+  std::multiset<Gadget*, Gadget::Sort>::iterator it = result.begin();
+  Gadget* test = *it;
+  test->analize();
   return 0;
 }
 

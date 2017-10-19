@@ -143,7 +143,7 @@ std::multiset<Gadget*> Ropperdis::find_all_gadget_from_ret(const unsigned char* 
       ));
 
 
-      Gadget *gadget = new (std::nothrow) Gadget();
+      Gadget *gadget = new (std::nothrow) Gadget(); //TODO: add here arch info
       if (gadget == NULL)
         printf("Cannot allocate gadget");
 

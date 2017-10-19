@@ -81,3 +81,33 @@ std::list<Instruction*> Gadget::get_instructions(void) {
 Instruction* Gadget::get_ending_instruction(void) {
   return m_instructions.back();
 }
+
+void Gadget::analize() {
+  emu.init_unicorn(UC_MODE_32, UC_ARCH_X86);//TODO CHANGE
+  //instr_ptr
+  //  stack_ptr
+  //  emu.map_code(rop_address, gadget_code);
+  //for registers on arch{
+  //  if registers == ip || registers == sp
+  //    continue;
+  //    val = self.arch.unpack(randoms(self.arch.bits >> 3))
+  //    emu[reg] = val
+  //    init_regs[val] = reg
+  //}
+  //emu.run(self.address, len(self.code));
+  //for reg in self.arch.regs:
+  //self.regs[reg] = ("junk", )
+  //  val = emu[reg]
+  //  if init_regs.get(val, None) :
+  //    self.regs[reg] = ("mov", init_regs[val])
+  //    continue
+  //    offset = gen_find(self.arch.pack(val), stack_data)
+  //    if offset != -1 :
+  //      self.regs[reg] = ("stack", offset)
+
+  //      if self.regs[sp][0] == "junk" :
+  //        self.move = emu[self.arch.stack_pointer] - stack
+  //        self.regs[sp] = ("add", self.move)
+
+  //        self.analysed = True
+}
