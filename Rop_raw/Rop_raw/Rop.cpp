@@ -132,7 +132,7 @@ std::multiset<Gadget*> Ropperdis::find_all_gadget_from_ret(const unsigned char* 
         std::string(ending_instr_disasm.Instruction.Mnemonic),
         ending_instr_disasm.EIP - (UIntPtr)data,len_ending_instr ));
 
-      Gadget *gadget = new (std::nothrow) Gadget(); //TODO: add here arch info
+      Gadget *gadget = new (std::nothrow) Gadget(mode_,arch_); //TODO: add here arch info
       if (gadget == NULL)
         printf("Cannot allocate gadget");
 
@@ -287,7 +287,7 @@ std::multiset<Gadget*> Ropperdis::find_gadget_in_memory(const unsigned char* dat
       only_ending_instr.push_back(Instruction(std::string(ret_instr.CompleteInstr),
         std::string(ret_instr.Instruction.Mnemonic),offset, len ));
 
-      Gadget *gadget_with_one_instr = new (std::nothrow) Gadget();
+      Gadget *gadget_with_one_instr = new (std::nothrow) Gadget(mode_,arch_);
       if (gadget_with_one_instr == NULL)
         printf("Cannot allocate gadget_with_one_instr");
 

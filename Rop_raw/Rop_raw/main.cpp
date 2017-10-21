@@ -1,5 +1,9 @@
 #include "Rop.h"
 #include <fstream>
+
+#pragma warning (disable : 4996 ) //function may be unsafe
+#pragma warning (disable : 4005) //macro redefinition
+
 int main() {
   //get string with hex file
   //disasemble

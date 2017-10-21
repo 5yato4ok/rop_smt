@@ -1,7 +1,9 @@
 #include "gadget.hpp"
 
-Gadget::Gadget(): m_size(0) {
+Gadget::Gadget(uc_mode uc_mode_, uc_arch uc_arch_) :
+m_size(0), mode(uc_mode_), arch(uc_arch_) {
 }
+
 
 Gadget::~Gadget(void) {
   /* Avoid memory leaks */
@@ -83,7 +85,7 @@ Instruction* Gadget::get_ending_instruction(void) {
 }
 
 void Gadget::analize() {
-  emu.init_unicorn(UC_MODE_32, UC_ARCH_X86);//TODO CHANGE
+  emu.init_unicorn(mode, arch);//TODO CHANGE
   //instr_ptr
   //  stack_ptr
   //  emu.map_code(rop_address, gadget_code);

@@ -1,5 +1,5 @@
 #pragma once
-//#include "unicorn\unicorn.h"
+#include "unicorn\unicorn.h"
 #include "executable_format.hpp"
 
 namespace unicorny {

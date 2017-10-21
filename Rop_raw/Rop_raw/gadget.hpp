@@ -15,8 +15,8 @@
 * the same one.
 */
 class Gadget {
-public:
-  explicit Gadget();
+ public:
+  Gadget(uc_mode uc_mode_, uc_arch uc_arch_);
   ~Gadget(void);
   /*!
   *  \brief Get the entire disassembly of your gadget
@@ -91,10 +91,10 @@ public:
       return g->get_disassembly() < d->get_disassembly();
     }
   };
-
   void analize();
-
  private:
+  uc_mode mode;
+  uc_arch arch;
   unicorny::Emulator emu;
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
