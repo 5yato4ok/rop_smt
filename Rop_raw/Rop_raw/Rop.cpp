@@ -1,7 +1,6 @@
 #include "Rop.h"
 #define BEA_ENGINE_STATIC
 
-
 namespace ropperdis {
 
 std::multiset<Gadget*, Gadget::Sort> Ropperdis::find_rop(uint32_t m_depth) {
@@ -39,8 +38,6 @@ std::multiset<Gadget*, Gadget::Sort> Ropperdis::find_rop(uint32_t m_depth) {
 }
 
 Ropperdis::Ropperdis(std::fstream& input) : input_file(input){
-  unsigned int magic_dword = 0;
-  input.read((char*)&magic_dword, sizeof(magic_dword));
   if (init()) {
     initialized_ = true;
   }
@@ -132,7 +129,7 @@ std::multiset<Gadget*> Ropperdis::find_all_gadget_from_ret(const unsigned char* 
         std::string(ending_instr_disasm.Instruction.Mnemonic),
         ending_instr_disasm.EIP - (UIntPtr)data,len_ending_instr ));
 
-      Gadget *gadget = new (std::nothrow) Gadget(mode_,arch_); //TODO: add here arch info
+      Gadget *gadget = new (std::nothrow) Gadget(mode_,arch_);
       if (gadget == NULL)
         printf("Cannot allocate gadget");
 
@@ -151,8 +148,8 @@ std::multiset<Gadget*> Ropperdis::find_all_gadget_from_ret(const unsigned char* 
 bool Ropperdis::is_valid_ending_instruction_nasm(DISASM& ending_instr_d) {
   Int32 branch_type = ending_instr_d.Instruction.BranchType;
   UInt64 addr_value = ending_instr_d.Instruction.AddrValue;
-  //TODO: change to string
-  char *mnemonic = ending_instr_d.Instruction.Mnemonic, *completeInstr = ending_instr_d.CompleteInstr;
+  char *mnemonic = ending_instr_d.Instruction.Mnemonic; 
+  char *completeInstr = ending_instr_d.CompleteInstr;
 
   bool is_good_branch_type = (
     /* We accept all the ret type instructions (except retf/iret) */
@@ -306,4 +303,4 @@ std::multiset<Gadget*> Ropperdis::find_gadget_in_memory(const unsigned char* dat
   return merged_gadgets;
 }
 
-}
+} //namespace ropperdis
