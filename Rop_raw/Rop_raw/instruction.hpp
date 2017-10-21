@@ -63,6 +63,8 @@ public:
   std::string get_mnemonic(void) const;
 
 private:
+  //condition info
+
   std::string m_disass; /*!< the disassembly of the instruction */
   std::string m_mnemonic; /*!< the mnemonic of the instruction */
   unsigned long long m_offset; /*!< the offset of the instruction */

@@ -7,6 +7,7 @@
 #include <vector>
 #include "section.hpp"
 #include "pe_struct.hpp"
+#include "unicorn\unicorn.h"
 
 class ExecutableFormat {
  public:
@@ -16,17 +17,17 @@ class ExecutableFormat {
     FORMAT_UNKNOWN
  };
   //TODO change here to unicorn exe info
-  enum E_CPU {
-    CPU_x86 = 0, /*!< x86 */
-    CPU_x64 = 64, /*!< x64 */
-    CPU_UNKNOWN /*!< unknown cpu */
-  };
+  //enum E_CPU {
+  //  CPU_x86 = 0, /*!< x86 */
+  //  CPU_x64 = 64, /*!< x64 */
+  //  CPU_UNKNOWN /*!< unknown cpu */
+  //};
 
 
   explicit ExecutableFormat(void);
   std::string get_class_name(void);
   std::vector<Section*> get_executables_section(std::fstream & file);
-  E_CPU ExecutableFormat::extract_information_from_binary(std::fstream &file);
+  uc_mode extract_information_from_binary(std::fstream &file);
   template<class T>
   void init_properly_PELayout() {
     m_pPELayout = new (std::nothrow) PELayout<T>;
