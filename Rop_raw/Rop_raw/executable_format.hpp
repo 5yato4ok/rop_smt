@@ -16,14 +16,7 @@ class ExecutableFormat {
     FORMAT_ELF,
     FORMAT_UNKNOWN
  };
-  //TODO change here to unicorn exe info
-  //enum E_CPU {
-  //  CPU_x86 = 0, /*!< x86 */
-  //  CPU_x64 = 64, /*!< x64 */
-  //  CPU_UNKNOWN /*!< unknown cpu */
-  //};
-
-
+ 
   explicit ExecutableFormat(void);
   std::string get_class_name(void);
   std::vector<Section*> get_executables_section(std::fstream & file);

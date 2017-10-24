@@ -90,6 +90,7 @@
     <ClCompile Include="section.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cpu_description.h" />
     <ClInclude Include="elf.hpp" />
     <ClInclude Include="elf_struct.hpp" />
     <ClInclude Include="Emulator.h" />

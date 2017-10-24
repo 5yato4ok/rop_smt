@@ -88,6 +88,7 @@ void Gadget::analize() {
   emu.init_unicorn(mode, arch);//TODO CHANGE
   //instr_ptr
   //  stack_ptr
+  emu.map_addres(0x1000, 100);
   //  emu.map_code(rop_address, gadget_code);
   //for registers on arch{
   //  if registers == ip || registers == sp

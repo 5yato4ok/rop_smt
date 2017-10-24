@@ -67,5 +67,8 @@
     <ClInclude Include="section.hpp">
       <Filter>exec_description</Filter>
     </ClInclude>
+    <ClInclude Include="cpu_description.h">
+      <Filter>exec_description</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
