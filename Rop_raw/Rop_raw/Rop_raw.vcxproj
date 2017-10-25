@@ -81,6 +81,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cpu_description.cpp" />
     <ClCompile Include="Emulator.cpp" />
     <ClCompile Include="executable_format.cpp" />
     <ClCompile Include="gadget.cpp" />

@@ -1,7 +1,7 @@
 #include "gadget.hpp"
 
 Gadget::Gadget(uc_mode uc_mode_, uc_arch uc_arch_) :
-m_size(0), mode(uc_mode_), arch(uc_arch_) {
+m_size(0),emu(uc_mode_,uc_arch_) {
 }
 
 
@@ -85,11 +85,9 @@ Instruction* Gadget::get_ending_instruction(void) {
 }
 
 void Gadget::analize() {
-  emu.init_unicorn(mode, arch);//TODO CHANGE
-  //instr_ptr
-  //  stack_ptr
-  emu.map_addres(0x1000, 100);
-  //  emu.map_code(rop_address, gadget_code);
+  if (!emu.init_unicorn())
+    return;
+  emu.map_code(get_first_offset(),get_disassembly());
   //for registers on arch{
   //  if registers == ip || registers == sp
   //    continue;

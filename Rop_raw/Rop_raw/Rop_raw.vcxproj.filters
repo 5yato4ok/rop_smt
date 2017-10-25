@@ -35,6 +35,9 @@
     <ClCompile Include="section.cpp">
       <Filter>exec_description</Filter>
     </ClCompile>
+    <ClCompile Include="cpu_description.cpp">
+      <Filter>exec_description</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Emulator.h">

@@ -93,8 +93,6 @@ class Gadget {
   };
   void analize();
  private:
-  uc_mode mode;
-  uc_arch arch;
   unicorny::Emulator emu;
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
