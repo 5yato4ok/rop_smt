@@ -32,9 +32,23 @@ uc_err Emulator::map_addres(uint64_t address, uint64_t length) {
 }
 
 uc_err Emulator::map_code(uint64_t address, std::string& code) {
+  uc_err result = UC_ERR_WRITE_PROT;
   if (map_addres(address, code.length()) == UC_ERR_OK) {
-    return uc_mem_write(uc, page, code.c_str(), code.length());
+    result = uc_mem_write(uc, page, code.c_str(), code.length());
+    if (result == UC_ERR_OK)
+      code_mapped_ = true;
   }
-  return UC_ERR_WRITE_PROT;
+  return result;
+}
+
+Emulator::~Emulator() {
+  uc_close(uc);
+}
+
+uc_err Emulator::run(uint64_t adress, uint64_t size) {
+  if (initialized_ && code_mapped_){
+    return uc_emu_start(uc, adress, adress + size,0,0);
+  }
+  return UC_ERR_EXCEPTION;
 }
 }

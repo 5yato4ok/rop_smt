@@ -27,4 +27,7 @@ class CPU_description {
   int alignment;
   const uc_mode mode_;
   const uc_arch arch_;
+  bool is_initialized() { return initialized_; }
+ private:
+   bool initialized_ = false;
 };
