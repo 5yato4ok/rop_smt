@@ -4,7 +4,7 @@
 #include "cpu_description.h"
 
 
-namespace unicorny {
+namespace ropperdis {
   class Emulator {
   public:
     Emulator(uc_mode mode_, uc_arch arch_);

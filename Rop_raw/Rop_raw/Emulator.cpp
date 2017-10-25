@@ -6,14 +6,14 @@
 //  //err = uc_open(arch, mode, &uc);
 //  err = uc_open(UC_ARCH_X86, UC_MODE_32, &uc);//
 //}
-namespace unicorny {
+namespace ropperdis {
   Emulator::Emulator(uc_mode mode_, uc_arch arch_):
     description(mode_,arch_)
   {};
 bool Emulator::init_unicorn() {
   uc_err err;
   err = uc_open(description.arch_, description.mode_, &uc);
-  if (err != UC_ERR_OK){
+  if (err != UC_ERR_OK && !description.is_initialized()){
     return false;
   }
   initialized_ = true;

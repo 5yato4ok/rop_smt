@@ -93,7 +93,7 @@ class Gadget {
   };
   void analize();
  private:
-  unicorny::Emulator emu;
+  ropperdis::Emulator emu;
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
   unsigned int m_size; /*!< the size in byte of the gadget*/
