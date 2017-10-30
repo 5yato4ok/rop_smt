@@ -3,6 +3,7 @@
 
 #pragma warning (disable : 4996 ) //function may be unsafe
 #pragma warning (disable : 4005) //macro redefinition
+#pragma warning (disable:4099) //pdb file wasnot found
 
 int main() {
   std::fstream file("x86.exe");

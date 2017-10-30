@@ -5,6 +5,7 @@
 #include "safeint.hpp"
 #include "executable_format.hpp"
 #include "gadget.hpp"
+#include <z3++.h>
 
 
 namespace ropperdis{
@@ -35,7 +36,7 @@ class Ropperdis {
   bool init();
   bool initialized_ = false;
   std::fstream& input_file;
-
+  //z3::solver z3_smt;
 };
 
 }//namespace ropperdis

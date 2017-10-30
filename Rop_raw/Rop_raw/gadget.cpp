@@ -88,6 +88,7 @@ void Gadget::analize() {
   if (!emu.init_unicorn())
     return;
   emu.map_code(get_first_offset(),get_disassembly());
+
   //stack = get_random_page(self.arch)
   //  stack_data = randoms(self.arch.page_size)
 

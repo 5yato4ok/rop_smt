@@ -14,6 +14,9 @@
     <Filter Include="rop_mngr">
       <UniqueIdentifier>{191dd618-1b9c-403e-a490-e4a52e263aa8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{e911c3b1-2684-476e-aa01-5189ff9323e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -37,6 +40,9 @@
     </ClCompile>
     <ClCompile Include="cpu_description.cpp">
       <Filter>exec_description</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +78,9 @@
     </ClInclude>
     <ClInclude Include="cpu_description.h">
       <Filter>exec_description</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

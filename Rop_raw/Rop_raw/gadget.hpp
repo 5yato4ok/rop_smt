@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 #include <map>
-
 #include "instruction.hpp"
 #include "Emulator.h"
+#include <z3++.h>
 /*! \class Gadget
 *
 * A gadget is a sequence of instructions that ends by an ending instruction (ret/call/jmp)
