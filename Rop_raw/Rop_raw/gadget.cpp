@@ -87,10 +87,9 @@ Instruction* Gadget::get_ending_instruction(void) {
 void Gadget::analize() {
   if (!emu.init_unicorn())
     return;
-  emu.map_code(get_first_offset(),get_disassembly());
-
-  //stack = get_random_page(self.arch)
-  //  stack_data = randoms(self.arch.page_size)
+  emu.map_code(get_first_offset(), get_disassembly());
+  uint64_t stack = utils::get_random_page(emu.description);
+  std::string stack_data = utils::random_str(emu.description.page_size);
 
   //  emu.setup_stack(
   //  stack,

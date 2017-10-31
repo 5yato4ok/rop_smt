@@ -7,6 +7,7 @@
 #include <map>
 #include "instruction.hpp"
 #include "Emulator.h"
+#include "utils.h"
 #include <z3++.h>
 /*! \class Gadget
 *
@@ -94,6 +95,7 @@ class Gadget {
   void analize();
  private:
   ropperdis::Emulator emu;
+  z3::context z3_context;
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
   unsigned int m_size; /*!< the size in byte of the gadget*/

@@ -1,7 +1,17 @@
+#pragma once
 #include "cpu_description.h"
-#include "z3\inc\z3.h"
+#include <sstream>
+#include <z3.h>
 #include <vector>
 #include <map>
 #include <string>
+#include <random>
 
-std::map<z3bit_vec,std::vector<std::string>> z3_new_state(ropperdis::CPU_description& arch);
+namespace utils {
+extern const std::string alphabet;
+uint64_t get_random_page(const cpu::CPU_description arch);
+std::string random_str(const uint32_t count, const std::string alph = alphabet);
+uint64_t random_int(uint64_t start, uint64_t end);
+
+//std::map<z3bit_vec,std::vector<std::string>> z3_new_state(ropperdis::CPU_description& arch);
+}
