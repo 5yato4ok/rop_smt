@@ -1,6 +1,7 @@
 #pragma once
 #include "unicorn\unicorn.h"
 #include <string>
+#include <vector>
 
 namespace cpu {
 class CPU_description {
@@ -12,6 +13,7 @@ public:
   int64_t address_mask;
   int64_t page_mask;
   int64_t page_size;
+  std::vector<uc_x86_reg> common_regs;
   std::string return_instructions;
   int alignment;
   const uc_mode mode_;

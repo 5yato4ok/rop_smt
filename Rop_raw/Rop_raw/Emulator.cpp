@@ -35,7 +35,7 @@ uc_err Emulator::Map_addres(const uint64_t address, const uint64_t length) {
 
 uc_err Emulator::Map_code(const uint64_t address, std::string const& code) {
   uc_err result = UC_ERR_WRITE_PROT;
-  if (Map_addres(address, code.length()) == UC_ERR_OK) {
+  if (Map_addres(address, code.size()) == UC_ERR_OK) {
     result = uc_mem_write(uc, page, code.c_str(), code.length());
     if (result == UC_ERR_OK)
       code_mapped = true;

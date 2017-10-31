@@ -87,18 +87,25 @@ Instruction* Gadget::get_ending_instruction(void) {
 void Gadget::analize() {
   if (!emu.Init_unicorn())
     return;
-  emu.Map_code(get_first_offset(), get_disassembly());
+  std::string test = "\xB9\x04\x00\x00\x00\x89\xCB";
+  uc_err result = emu.Map_code(get_first_offset(), test); //get_disassembly()
   uint64_t stack = utils::get_random_page(emu.description_);
   std::string stack_data = utils::random_str(emu.description_.page_size);
-  uc_err result = emu.Setup_stack(stack, emu.description_.page_size, stack_data);
-  //for registers on arch{
-  //  if registers == ip || registers == sp
-  //    continue;
-  //    val = self.arch.unpack(randoms(self.arch.bits >> 3))
-  //    emu[reg] = val
-  //    init_regs[val] = reg
-  //}
-  //emu.run(self.address, len(self.code));
+  result = emu.Setup_stack(stack, emu.description_.page_size, stack_data);
+  std::vector<std::string> random_data;
+  std::map<uint64_t, uc_x86_reg> registr_value;
+  for (int i = 0; i < emu.description_.common_regs.size(); i++) {
+    if (emu.description_.common_regs[i] == emu.description_.instruction_pointer ||
+      emu.description_.common_regs[i] == emu.description_.stack_pointer) {
+      random_data.push_back("");
+      continue;
+    }
+    random_data.push_back(utils::random_str(emu.description_.bits >> 3));
+    //std::string& smth(&random_data[i]); //TODO fix problem with ptr
+    //result = emu.Setup_regist(emu.description_.common_regs[i], (uint64_t)&random_data[i]);
+    registr_value[(uint64_t)&random_data[i]] = emu.description_.common_regs[i];
+  }
+  result = emu.Run(get_first_offset(), test.size()); //get_size()
   //for reg in self.arch.regs:
   //self.regs[reg] = ("junk", )
   //  val = emu[reg]
