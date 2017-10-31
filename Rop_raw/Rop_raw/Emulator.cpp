@@ -7,48 +7,77 @@
 //  err = uc_open(UC_ARCH_X86, UC_MODE_32, &uc);//
 //}
 namespace ropperdis {
-  Emulator::Emulator(uc_mode mode_, uc_arch arch_):
-    description(mode_,arch_)
-  {};
-bool Emulator::init_unicorn() {
+Emulator::Emulator(const uc_mode mode_, const uc_arch arch_):
+  description_(mode_,arch_)
+{};
+
+bool Emulator::Init_unicorn() {
   uc_err err;
-  err = uc_open(description.arch_, description.mode_, &uc);
-  if (err != UC_ERR_OK && !description.is_initialized()){
+  err = uc_open(description_.arch_, description_.mode_, &uc);
+  if (err != UC_ERR_OK && !description_.is_initialized()){
     return false;
   }
-  initialized_ = true;
+  initialized = true;
   return true;
 }
-uc_err Emulator::map_addres(uint64_t address, uint64_t length) {
-  page = address & description.page_mask;
+
+uc_err Emulator::Map_addres(const uint64_t address, const uint64_t length) {
+  page = address & description_.page_mask;
   uint64_t size = 0;
   while ((page + size) <= address + length){
-    size += description.page_size;
+    size += description_.page_size;
   }
-  if (initialized_) {
+  if (Is_initialized()) {
     return uc_mem_map(uc, page, size, UC_PROT_ALL);
   }
   return UC_ERR_MAP;
 }
 
-uc_err Emulator::map_code(uint64_t address, std::string& code) {
+uc_err Emulator::Map_code(const uint64_t address, std::string const& code) {
   uc_err result = UC_ERR_WRITE_PROT;
-  if (map_addres(address, code.length()) == UC_ERR_OK) {
+  if (Map_addres(address, code.length()) == UC_ERR_OK) {
     result = uc_mem_write(uc, page, code.c_str(), code.length());
     if (result == UC_ERR_OK)
-      code_mapped_ = true;
+      code_mapped = true;
   }
   return result;
 }
 
-Emulator::~Emulator() {
-  uc_close(uc);
+uc_err Emulator::Setup_regist(const uc_x86_reg reg, const uint64_t value) {
+  return uc_reg_write(uc, reg, &value);
 }
 
-uc_err Emulator::run(uint64_t adress, uint64_t size) {
-  if (initialized_ && code_mapped_){
+uint64_t Emulator::Get_reg_value(const uc_x86_reg reg) {
+  uint64_t value;
+  uc_err read_result = uc_reg_read(uc, reg, &value);
+  if (read_result == UC_ERR_OK) {
+    return value;
+  }
+  return read_result;
+}
+
+uc_err Emulator::Setup_stack(const uint64_t address, const uint64_t size, std::string const& data) {
+  if (!Is_initialized()) {
+    return UC_ERR_MAP;
+  } 
+  uc_err result = uc_mem_map(uc, address, size, UC_PROT_ALL);
+  if (result == UC_ERR_OK) {
+    if (!data.empty()) {
+      result = uc_mem_write(uc, address, &data, data.size());
+    }
+    result = Setup_regist(description_.stack_pointer, address);
+  }
+  return result;
+}
+
+uc_err Emulator::Run(const uint64_t adress, const uint64_t size) {
+  if (Is_initialized() && Code_mapped()){
     return uc_emu_start(uc, adress, adress + size,0,0);
   }
   return UC_ERR_EXCEPTION;
+}
+
+Emulator::~Emulator() {
+  uc_close(uc);
 }
 }

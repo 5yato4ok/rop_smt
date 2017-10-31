@@ -11,7 +11,7 @@ std::string random_str(const uint32_t count, const std::string alph) {
   return oss.str();
 }
 
-uint64_t random_int(uint64_t start, uint64_t end) {
+uint64_t random_int(const uint64_t start, const uint64_t end) {
   std::random_device rd;
   std::mt19937 mt(rd());
   std::uniform_int_distribution<uint64_t> dist(start, end);

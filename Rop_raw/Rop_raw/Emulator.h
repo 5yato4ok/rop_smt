@@ -7,21 +7,25 @@
 namespace ropperdis {
 class Emulator {
 public:
-  Emulator(uc_mode mode_, uc_arch arch_);
+  Emulator(const uc_mode mode_, const uc_arch arch_);
   ~Emulator();
   uc_engine *uc;
-  bool init_unicorn();
-  uc_err map_addres(uint64_t adress, uint64_t length);
-  uc_err map_code(uint64_t address, std::string& code);
-  //setup_stack(adress, size, data = none);
-  uc_err run(uint64_t adress, uint64_t size);
-  cpu::CPU_description description;
+  const cpu::CPU_description description_;
+  bool Init_unicorn();
+  uc_err Map_addres(const uint64_t adress, const uint64_t length);
+  uc_err Map_code(const uint64_t address, std::string const& code);
+  uc_err Setup_stack(const uint64_t adress, const uint64_t size,std::string const& data = "");
+  uc_err Setup_regist(const uc_x86_reg reg, const uint64_t value);
+  uint64_t Get_reg_value(const uc_x86_reg reg);
+  uc_err Run(const uint64_t adress, const uint64_t size);
+  const bool Is_initialized() const { return initialized; }
+  const bool Code_mapped() const { return code_mapped; }
 private:
   uint64_t page;
   //const std::string ip = instruction_pointer;
   //const std::string sp = stack_pointer;
-  bool initialized_ = false;
-  bool code_mapped_ = false;
+  bool initialized = false;
+  bool code_mapped = false;
 };
 
 }// namespace unicorny

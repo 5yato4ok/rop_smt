@@ -18,7 +18,7 @@ class Ropperdis {
   //std::multiset<Gadget*>generate_chain(uint32_t levels,input_condition_code)
   //std::set_condition
 
-  bool initialized() { return initialized_; }
+  bool Initialized() const { return initialized_; }
  private:
    std::multiset<Gadget*> Ropperdis::find_gadget_in_memory(const unsigned char* data, unsigned long long size, 
      unsigned long long vaddr, uint32_t m_depth = 3);

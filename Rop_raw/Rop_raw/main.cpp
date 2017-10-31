@@ -10,7 +10,7 @@ int main() {
   std::fstream file("x86.exe");
   ropperdis::Ropperdis mngr(file);
   std::multiset<Gadget*, Gadget::Sort> result;
-  if (mngr.initialized()) {
+  if (mngr.Initialized()) {
     result = mngr.find_rop();
   }
   std::multiset<Gadget*, Gadget::Sort>::iterator it = result.begin();

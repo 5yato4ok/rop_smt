@@ -85,17 +85,12 @@ Instruction* Gadget::get_ending_instruction(void) {
 }
 
 void Gadget::analize() {
-  if (!emu.init_unicorn())
+  if (!emu.Init_unicorn())
     return;
-  emu.map_code(get_first_offset(), get_disassembly());
-  uint64_t stack = utils::get_random_page(emu.description);
-  std::string stack_data = utils::random_str(emu.description.page_size);
-
-  //  emu.setup_stack(
-  //  stack,
-  //  self.arch.page_size,
-  //  stack_data
-  //  )
+  emu.Map_code(get_first_offset(), get_disassembly());
+  uint64_t stack = utils::get_random_page(emu.description_);
+  std::string stack_data = utils::random_str(emu.description_.page_size);
+  uc_err result = emu.Setup_stack(stack, emu.description_.page_size, stack_data);
   //for registers on arch{
   //  if registers == ip || registers == sp
   //    continue;
