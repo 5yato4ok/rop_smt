@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 
+#define NUM_REGS 9
+//TODO: do two different classes for x86 and x86-64
+//TODO: set number of using regist as const
 namespace cpu {
 class CPU_description {
 public:
@@ -16,6 +19,7 @@ public:
   std::vector<uc_x86_reg> common_regs;
   std::string return_instructions;
   int alignment;
+  const
   const uc_mode mode_;
   const uc_arch arch_;
   bool is_initialized() const { return initialized_; }
