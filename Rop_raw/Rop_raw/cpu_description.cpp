@@ -39,4 +39,47 @@ CPU_description::CPU_description(uc_mode mode, uc_arch arch) :
     initialized_ = false;
   }
 };
+
+uc_x86_reg str_to_reg(const std::string& str_registr) {
+  if (str_registr == "rax") {
+    return UC_X86_REG_RAX;
+  } else if (str_registr == "rbx") {
+    return UC_X86_REG_RBX;
+  } else if (str_registr == "rcx") {
+    return UC_X86_REG_RCX;
+  } else if (str_registr == "rdx") {
+    return UC_X86_REG_RDX;
+  } else if (str_registr == "rsp") {
+    return UC_X86_REG_RSP;
+  } else if (str_registr == "rsi") {
+    return UC_X86_REG_RSI;
+  } else if (str_registr == "rdi") {
+    return UC_X86_REG_RBX;
+  } else if (str_registr == "rip") {
+    return UC_X86_REG_RBX;
+  } else if (str_registr == "rbp") {
+    return UC_X86_REG_RBP;
+  } else if (str_registr == "eax") {
+    return UC_X86_REG_EAX;
+  } else if (str_registr == "ebx") {
+    return UC_X86_REG_EBX;
+  } else if (str_registr == "ecx") {
+    return UC_X86_REG_ECX;
+  } else if (str_registr == "edx") {
+    return UC_X86_REG_EDX;
+  } else if (str_registr == "esp") {
+    return UC_X86_REG_ESP;
+  } else if (str_registr == "esi") {
+    return UC_X86_REG_ESI;
+  } else if (str_registr == "edi") {
+    return UC_X86_REG_EBX;
+  } else if (str_registr == "eip") {
+    return UC_X86_REG_EBX;
+  } else if (str_registr == "ebp") {
+    return UC_X86_REG_EBP;
+  } else {
+    return UC_X86_REG_ZMM9;
+  }
+}
+
 } //namespace cpu

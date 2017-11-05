@@ -15,6 +15,9 @@
 * In order, to keep in memory only *unique* gadgets, each gadget holds a set of offset where you can find
 * the same one.
 */
+
+enum class action : int32_t {MOV, STACK};
+
 class Gadget {
  public:
   Gadget(uc_mode uc_mode_, uc_arch uc_arch_);
@@ -94,6 +97,8 @@ class Gadget {
   };
   void analize();
  private:
+
+  int mov = 0; //clean stack on N bytes
   ropperdis::Emulator emu;
   z3::context z3_context;
   bool is_analized = false;
@@ -102,6 +107,7 @@ class Gadget {
   std::list<Instruction*> m_instructions; /*!< the list of the different instructions composing the gadget*/
   std::vector<unsigned long long> m_offsets; /*!< the vector which stores where you can find the same gadget ; those offsets are relative to m_va_section*/
   std::vector<unsigned long long> m_va_sections; /*!< the virtual address of the section where the instructions were found*/
+
 };
 
 #endif

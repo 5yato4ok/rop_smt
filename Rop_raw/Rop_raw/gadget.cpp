@@ -111,6 +111,7 @@ void Gadget::analize() {
   }
   result = emu.Run(get_first_offset(), get_size()); //TODO ???
   int smth = 4;
+  //setting value condition to mov reg,reg // or setting reg (stack< int) push/pop??
   //for reg in self.arch.regs:
   //self.regs[reg] = ("junk", )
   //  val = emu[reg]
