@@ -84,6 +84,8 @@ Instruction* Gadget::get_ending_instruction(void) {
   return m_instructions.back();
 }
 
+//TODO: refactor. separate this function.
+//TODO: make independent on arch. which type use?
 void Gadget::analize() { //TODO::set to x64 independent
   if (!emu.Init_unicorn())
     return;

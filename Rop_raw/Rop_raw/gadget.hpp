@@ -18,6 +18,7 @@
 
 enum class action : int32_t {MOV, STACK};
 
+//TODO: SMT -gadget make as child class
 class Gadget {
  public:
   Gadget(uc_mode uc_mode_, uc_arch uc_arch_);

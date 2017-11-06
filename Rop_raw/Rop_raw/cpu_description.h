@@ -5,6 +5,7 @@
 
 
 //TODO: do two different classes for x86 and x86-64
+//make all constant
 namespace cpu {
 class CPU_description {
 public:
@@ -15,7 +16,7 @@ public:
   int64_t address_mask;
   int64_t page_mask;
   int64_t page_size;
-  std::vector<uc_x86_reg> common_regs; //change to std::array
+  std::vector<uc_x86_reg> common_regs; //change to enum with string
   std::string return_instructions;
   int alignment;
   const uc_mode mode_;
