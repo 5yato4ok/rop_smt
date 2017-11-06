@@ -11,7 +11,7 @@ CPU_description::CPU_description(uc_mode mode, uc_arch arch) :
       instruction_pointer = UC_X86_REG_EIP;
       stack_pointer = UC_X86_REG_ESP;
       common_regs = { UC_X86_REG_EAX, UC_X86_REG_ECX, UC_X86_REG_EDX,
-        UC_X86_REG_EBX, UC_X86_REG_ESP, UC_X86_REG_EBP,
+        UC_X86_REG_EBX, UC_X86_REG_ESP, UC_X86_REG_EBP, //change to enum
         UC_X86_REG_ESI, UC_X86_REG_EDI, UC_X86_REG_EIP };
       address_mask = 0xffffffff;
       page_mask = 0xfffff000;
@@ -23,7 +23,7 @@ CPU_description::CPU_description(uc_mode mode, uc_arch arch) :
       bits = 64;
       instruction_pointer = UC_X86_REG_RIP;
       stack_pointer = UC_X86_REG_RSP;
-      common_regs = { UC_X86_REG_RAX, UC_X86_REG_RCX, UC_X86_REG_RDX,
+      common_regs = { UC_X86_REG_RAX, UC_X86_REG_RCX, UC_X86_REG_RDX, //change to enum
         UC_X86_REG_RBX, UC_X86_REG_RSP, UC_X86_REG_RBP, 
         UC_X86_REG_RSI, UC_X86_REG_RDI, UC_X86_REG_RIP};
       address_mask = 0x0000007fffffffff;

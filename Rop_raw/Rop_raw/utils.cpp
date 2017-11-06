@@ -3,6 +3,27 @@
 namespace utils {
 const std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
+int32_t gen_find(const std::string& subseq, const std::string& generator) {
+  int32_t pos = 0;
+  int32_t size = subseq.length();
+  int32_t size2 = generator.length();
+  pos = (size2 - size)/sizeof(byte);
+  return pos;
+}
+//def gen_find(subseq, generator) :
+//subseq = list(subseq)
+//pos = 0
+//saved = []
+//
+//  for c in generator :
+//  saved.append(c)
+//  if len(saved) > len(subseq) :
+//    saved.pop(0)
+//    pos += 1
+//  if saved == subseq :
+//    return pos
+//    return -1
+
 std::string random_str(const uint32_t count, const std::string alph) {
   std::ostringstream oss;
   for (int i = 0; i < count; i++) {

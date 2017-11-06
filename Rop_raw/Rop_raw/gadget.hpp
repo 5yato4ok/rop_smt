@@ -97,7 +97,7 @@ class Gadget {
   };
   void analize();
  private:
-
+  std::map <uc_x86_reg, std::vector<std::string>> regs_condition;
   int mov = 0; //clean stack on N bytes
   ropperdis::Emulator emu;
   z3::context z3_context;
