@@ -63,7 +63,7 @@ uc_err Emulator::Setup_stack(const uint64_t address, const uint64_t size, std::s
   uc_err result = uc_mem_map(uc, address, size, UC_PROT_ALL);
   if (result == UC_ERR_OK) {
     if (!data.empty()) {
-      result = uc_mem_write(uc, address, &data, data.size());
+      result = uc_mem_write(uc, address, data.c_str(), data.size());
     }
     result = Setup_regist(description_.stack_pointer, address);
   }

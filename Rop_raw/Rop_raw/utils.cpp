@@ -3,31 +3,52 @@
 namespace utils {
 const std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
+std::string convert_ascii2string(std::string& ascii_code,const int radix) {
+  int len = ascii_code.length();
+  std::string newString;
+  for (int i = 0; i < len; i += 2) {
+    std::string byte = ascii_code.substr(i, 2);
+    char chr = (char)(int)strtol(byte.c_str(), nullptr, radix);
+    newString.push_back(chr);
+  }
+  return newString;
+}
+
+std::string covert_int2hex(const uint64_t value) {
+  std::stringstream result_str;
+  result_str << std::hex << value;
+  return result_str.str();
+}
+
+std::string convert_string2ascii(std::string& string) {
+  std::stringstream result_str;
+  result_str << std::setw(2) << std::setfill('0') << std::hex << std::uppercase;
+  std::copy(string.begin(), string.end(), std::ostream_iterator<unsigned int>(result_str, ""));
+  return result_str.str();
+}
+
+//TODO: How get number of byte to clean stack?
 int32_t gen_find(const std::string& subseq, const std::string& generator) {
   int32_t pos = 0;
-  int32_t size = subseq.length();
-  int32_t size2 = generator.length();
-  pos = (size2 - size)/sizeof(byte);
-  return pos;
+  std::string saved;
+  for (int i = 0; i < generator.size(); i++) {
+    saved += generator[i];
+    if (saved.length()>subseq.length()) {
+      saved.pop_back();
+      pos += 1;
+    }
+    if (saved == subseq) {
+      return pos;
+    }
+  }
+  return -1;
 }
-//def gen_find(subseq, generator) :
-//subseq = list(subseq)
-//pos = 0
-//saved = []
-//
-//  for c in generator :
-//  saved.append(c)
-//  if len(saved) > len(subseq) :
-//    saved.pop(0)
-//    pos += 1
-//  if saved == subseq :
-//    return pos
-//    return -1
 
 std::string random_str(const uint32_t count, const std::string alph) {
   std::ostringstream oss;
   for (int i = 0; i < count; i++) {
-    oss << alphabet[random_int(0, alph.size() - 1)];
+    //oss << alphabet[random_int(0, alph.size() - 1)];
+    oss << "A";
   }
   return oss.str();
 }

@@ -89,7 +89,7 @@ Instruction* Gadget::get_ending_instruction(void) {
 void Gadget::analize() { //TODO::set to x64 independent
   if (!emu.Init_unicorn())
     return;
-  std::string test = "\x83\xC0\x04\x8F\x05\x00\x00\x00\x00\xC3";
+  std::string test = "\x83\xC3\x04\x53\xC3";
   uc_err result = emu.Map_code(0x1000, test);//(get_first_offset(), get_disassembly());
   uint64_t stack = utils::get_random_page(emu.description_);
   std::string stack_data = utils::random_str(emu.description_.page_size);
@@ -103,16 +103,12 @@ void Gadget::analize() { //TODO::set to x64 independent
       continue;
     }
     random_data.push_back(utils::random_str(emu.description_.bits >> 3));
-    std::stringstream result_str;
-    result_str << std::setw(2) << std::setfill('0') << std::hex << std::uppercase;
-    std::copy(random_data[i].begin(), random_data[i].end(), std::ostream_iterator<unsigned int>(result_str, ""));
-    uint32_t hex_value;
-    result_str >> hex_value;
+    uint64_t hex_value = std::stoll(utils::convert_string2ascii(random_data[i]),0,16);
     result = emu.Setup_regist(emu.description_.common_regs[i], hex_value);
     uint32_t test_U = emu.Get_reg_value(UC_X86_REG_EAX);
     init_regs[hex_value] = emu.description_.common_regs[i];
   }
-  result = emu.Run(0x1000, test.size());//(get_first_offset(), get_size()); //why ???
+  result = emu.Run(0x1000, test.size());//(get_first_offset(), get_size()) //why ???
   for (int i = 0; i < emu.description_.common_regs.size(); i++) {
     uc_x86_reg current_reg = emu.description_.common_regs[i];
     regs_condition[current_reg] = { "junk", "" };
@@ -121,10 +117,13 @@ void Gadget::analize() { //TODO::set to x64 independent
       regs_condition[current_reg] = { "mov", std::to_string(init_regs[val_emu]) }; //TODO chanage to enum 
       continue;
     }
-    int32_t offset = utils::gen_find(std::to_string(val_emu), stack_data);
+
+    int32_t offset = utils::gen_find(utils::convert_ascii2string(utils::covert_int2hex(val_emu),16), stack_data);
     //for esp should be -1
-    regs_condition[current_reg] = { "stack", std::to_string(offset) };
-  }
+    if (offset != -1) {
+      regs_condition[current_reg] = { "stack", std::to_string(offset) };
+    }
+   }
 
   if (regs_condition[emu.description_.stack_pointer][0] == "junk") {
     mov = emu.Get_reg_value(emu.description_.stack_pointer) - stack;
