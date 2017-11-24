@@ -9,6 +9,7 @@
 #include <map>
 #include <list>
 #include <random>
+#include <algorithm>
 
 namespace utils {
 extern const std::string alphabet;

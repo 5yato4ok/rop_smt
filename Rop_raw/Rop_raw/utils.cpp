@@ -4,13 +4,13 @@ namespace utils {
 const std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 std::string convert_ascii2string(std::string& ascii_code,const int radix) {
-  int len = ascii_code.length();
   std::string newString;
-  for (int i = 0; i < len; i += 2) {
+  for (int i = 0; i < ascii_code.length(); i += 2) {
     std::string byte = ascii_code.substr(i, 2);
     char chr = (char)(int)strtol(byte.c_str(), nullptr, radix);
     newString.push_back(chr);
   }
+  std::reverse(newString.begin(), newString.end());
   return newString;
 }
 
@@ -34,7 +34,7 @@ int32_t gen_find(const std::string& subseq, const std::string& generator) {
   for (int i = 0; i < generator.size(); i++) {
     saved += generator[i];
     if (saved.length()>subseq.length()) {
-      saved.pop_back();
+      saved.erase(0, 1);
       pos += 1;
     }
     if (saved == subseq) {
@@ -47,8 +47,8 @@ int32_t gen_find(const std::string& subseq, const std::string& generator) {
 std::string random_str(const uint32_t count, const std::string alph) {
   std::ostringstream oss;
   for (int i = 0; i < count; i++) {
-    //oss << alphabet[random_int(0, alph.size() - 1)];
-    oss << "A";
+    oss << alphabet[random_int(0, alph.size() - 1)];
+    //oss << "A";
   }
   return oss.str();
 }

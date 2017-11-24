@@ -89,7 +89,7 @@ Instruction* Gadget::get_ending_instruction(void) {
 void Gadget::analize() { //TODO::set to x64 independent
   if (!emu.Init_unicorn())
     return;
-  std::string test = "\x83\xC3\x04\x53\xC3";
+  std::string test = "\x5B\x5D\xC3";
   uc_err result = emu.Map_code(0x1000, test);//(get_first_offset(), get_disassembly());
   uint64_t stack = utils::get_random_page(emu.description_);
   std::string stack_data = utils::random_str(emu.description_.page_size);
