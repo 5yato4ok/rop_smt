@@ -91,26 +91,27 @@ void Gadget::analize() { //TODO::set to x64 independent
     return;
   std::string test = "\x5B\x5D\xC3";
   uc_err result = emu.Map_code(0x1000, test);//(get_first_offset(), get_disassembly());
-  uint64_t stack = utils::get_random_page(emu.description_);
-  std::string stack_data = utils::random_str(emu.description_.page_size);
-  result = emu.Setup_stack(stack, emu.description_.page_size, stack_data);
+  auto arch_description = emu.get_description();
+  uint64_t stack = utils::get_random_page(arch_description);
+  std::string stack_data = utils::random_str(arch_description.page_size);
+  result = emu.Setup_stack(stack, arch_description.page_size, stack_data);
   std::vector<std::string> random_data;
   std::map<uint32_t, uc_x86_reg> init_regs;
-  for (int i = 0; i < emu.description_.common_regs.size(); i++) {
-    if (emu.description_.common_regs[i] == emu.description_.instruction_pointer ||
-      emu.description_.common_regs[i] == emu.description_.stack_pointer) {
+  for (int i = 0; i < arch_description.common_regs.size(); i++) {
+    if (arch_description.common_regs[i] == arch_description.instruction_pointer ||
+      arch_description.common_regs[i] == arch_description.stack_pointer) {
       random_data.push_back("");
       continue;
     }
-    random_data.push_back(utils::random_str(emu.description_.bits >> 3));
+    random_data.push_back(utils::random_str(arch_description.bits >> 3));
     uint64_t hex_value = std::stoll(utils::convert_string2ascii(random_data[i]),0,16);
-    result = emu.Setup_regist(emu.description_.common_regs[i], hex_value);
+    result = emu.Setup_regist(arch_description.common_regs[i], hex_value);
     uint32_t test_U = emu.Get_reg_value(UC_X86_REG_EAX);
-    init_regs[hex_value] = emu.description_.common_regs[i];
+    init_regs[hex_value] = arch_description.common_regs[i];
   }
   result = emu.Run(0x1000, test.size());//(get_first_offset(), get_size()) //why ???
-  for (int i = 0; i < emu.description_.common_regs.size(); i++) {
-    uc_x86_reg current_reg = emu.description_.common_regs[i];
+  for (int i = 0; i < arch_description.common_regs.size(); i++) {
+    uc_x86_reg current_reg = arch_description.common_regs[i];
     regs_condition[current_reg] = { "junk", "" };
     uint32_t val_emu = emu.Get_reg_value(current_reg);
     if (init_regs.find(val_emu) != init_regs.end()) {
@@ -125,9 +126,35 @@ void Gadget::analize() { //TODO::set to x64 independent
     }
    }
 
-  if (regs_condition[emu.description_.stack_pointer][0] == "junk") {
-    mov = emu.Get_reg_value(emu.description_.stack_pointer) - stack;
-    regs_condition[emu.description_.stack_pointer] = { "add", std::to_string(mov) };
+  if (regs_condition[arch_description.stack_pointer][0] == "junk") {
+    mov = emu.Get_reg_value(arch_description.stack_pointer) - stack;
+    regs_condition[arch_description.stack_pointer] = { "add", std::to_string(mov) };
   }
   is_analized = true;
 }
+
+void Gadget::map(std::map<std::string, z3::expr> ins) {
+  if (is_analized == false)
+    return;
+}
+
+//def map(self, ins) :
+//assert self.analysed
+//outs = dict(ins)
+//outs["constraints"] = list(ins["constraints"])
+//outs["constraints"].append(ins[self.arch.ip] == self.address)
+//
+//for reg, action in self.regs.items() :
+//if action[0] == "mov" :
+//outs[reg] = ins[action[1]]
+//elif action[0] == "stack" :
+//outs[reg] = z3_read_bits(ins["stack"], action[1] * 8, self.arch.bits)
+//elif action[0] == "add" :
+//outs[reg] = ins[reg] + action[1]
+//elif action[0] == "junk" :
+//outs[reg] = random.randint(0, 2 * *self.arch.bits)
+//
+//if self.move >= 0 :
+//outs["stack"] = z3_read_bits(ins["stack"], self.move * 8)
+//
+//return outs

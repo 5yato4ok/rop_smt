@@ -3,7 +3,7 @@
 namespace utils {
 const std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-std::string convert_ascii2string(std::string& ascii_code,const int radix) {
+std::string convert_ascii2string(const std::string& ascii_code,const int radix) {
   std::string newString;
   for (int i = 0; i < ascii_code.length(); i += 2) {
     std::string byte = ascii_code.substr(i, 2);
@@ -20,7 +20,7 @@ std::string covert_int2hex(const uint64_t value) {
   return result_str.str();
 }
 
-std::string convert_string2ascii(std::string& string) {
+std::string convert_string2ascii(const std::string& string) {
   std::stringstream result_str;
   result_str << std::setw(2) << std::setfill('0') << std::hex << std::uppercase;
   std::copy(string.begin(), string.end(), std::ostream_iterator<unsigned int>(result_str, ""));
@@ -63,5 +63,12 @@ uint64_t random_int(const uint64_t start, const uint64_t end) {
 uint64_t get_random_page(const cpu::CPU_description arch) {
   return random_int(0, pow(2, arch.bits - 1)) & arch.page_mask;
 };
+
+std::map<std::string, z3::expr> z3_new_state(z3::context& context, cpu::CPU_description& arch) {
+  z3::expr stack_description = context.bv_const("stack",arch.page_size*8);
+  z3::expr constraint_description = context.bv_const("smth",100); //TODO: is here ptr to smth?
+  std::map<std::string, z3::expr> state = { { "stack", stack_description }, { "constartaints", constraint_description} };
+  return state;
+}
 
 }

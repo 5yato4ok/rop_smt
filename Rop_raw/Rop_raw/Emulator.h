@@ -10,7 +10,7 @@ public:
   Emulator(const uc_mode mode_, const uc_arch arch_);
   ~Emulator();
   uc_engine *uc;
-  const cpu::CPU_description description_;
+  
   bool Init_unicorn();
   uc_err Map_addres(const uint64_t adress, const uint64_t length);
   uc_err Map_code(const uint64_t address, std::string const& code);
@@ -20,10 +20,10 @@ public:
   uc_err Run(const uint64_t adress, const uint64_t size);
   const bool Is_initialized() const { return initialized; }
   const bool Code_mapped() const { return code_mapped; }
+  cpu::CPU_description get_description() { return description_; };
 private:
   uint64_t page;
-  //const std::string ip = instruction_pointer;
-  //const std::string sp = stack_pointer;
+  const cpu::CPU_description description_;
   bool initialized = false;
   bool code_mapped = false;
 };

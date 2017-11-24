@@ -19,7 +19,7 @@
 enum class action : int32_t {MOV, STACK};
 
 //TODO: SMT -gadget make as child class
-class Gadget {
+class Gadget { // as RealGadget in script
  public:
   Gadget(uc_mode uc_mode_, uc_arch uc_arch_);
   ~Gadget(void);
@@ -96,7 +96,9 @@ class Gadget {
       return g->get_disassembly() < d->get_disassembly();
     }
   };
+  cpu::CPU_description get_arch_info() { return emu.get_description(); };
   void analize();
+  void map(std::map<std::string, z3::expr> ins);
  private:
   std::map <uc_x86_reg, std::vector<std::string>> regs_condition;
   int mov = 0; //clean stack on N bytes
