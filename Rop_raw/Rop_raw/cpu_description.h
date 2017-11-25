@@ -1,6 +1,7 @@
 #pragma once
 #include "unicorn\unicorn.h"
 #include <string>
+#include <map>
 #include <vector>
 
 
@@ -16,12 +17,11 @@ public:
   int64_t address_mask;
   int64_t page_mask;
   int64_t page_size;
-  std::vector<uc_x86_reg> common_regs; //change to enum with string
   std::string return_instructions;
   int alignment;
   const uc_mode mode_;
   const uc_arch arch_;
-  const uc_x86_reg str_to_reg(const std::string& str_registr);
+  std::map<uc_x86_reg, std::string> common_regs_;
   bool is_initialized() const { return initialized_; }
 private:
   bool initialized_ = false;

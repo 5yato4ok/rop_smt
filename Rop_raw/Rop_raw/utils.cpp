@@ -68,6 +68,9 @@ std::map<std::string, z3::expr> z3_new_state(z3::context& context, cpu::CPU_desc
   z3::expr stack_description = context.bv_const("stack",arch.page_size*8);
   z3::expr constraint_description = context.bv_const("smth",100); //TODO: is here ptr to smth?
   std::map<std::string, z3::expr> state = { { "stack", stack_description }, { "constartaints", constraint_description} };
+  for (auto const& current_reg : arch.common_regs_) {
+    //state[];
+  }
   return state;
 }
 

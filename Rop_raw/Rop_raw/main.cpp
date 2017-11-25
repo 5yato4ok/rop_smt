@@ -16,8 +16,7 @@ int main() {
   std::multiset<Gadget*, Gadget::Sort>::iterator it = result.begin();
   Gadget* test = *it;
   test->analize();
-  z3::context context;
-  std::map<std::string, z3::expr> z3_state = utils::z3_new_state(context,test->get_arch_info());
+  //test->map();
   file.close();
   return 0;
 }

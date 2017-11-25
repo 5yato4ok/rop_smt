@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iterator>
 #include "instruction.hpp"
 #include "Emulator.h"
 #include "utils.h"
@@ -98,12 +99,13 @@ class Gadget { // as RealGadget in script
   };
   cpu::CPU_description get_arch_info() { return emu.get_description(); };
   void analize();
-  void map(std::map<std::string, z3::expr> ins);
+  void map();
  private:
   std::map <uc_x86_reg, std::vector<std::string>> regs_condition;
   int mov = 0; //clean stack on N bytes
   ropperdis::Emulator emu;
   z3::context z3_context;
+  std::map<std::string, z3::expr> z3_state;
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
   unsigned int m_size; /*!< the size in byte of the gadget*/
