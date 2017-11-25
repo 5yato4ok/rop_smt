@@ -134,7 +134,9 @@ void Gadget::map() {
   if (!is_analized)
     return;
   z3_state = utils::z3_new_state(z3_context, emu.get_description());
-  //std::vector<z3::expr> constraints = { { z3_state["constraints"] }, { z3_state["stack"] == 0x1000 } }; //get_first_offset()
+  //TODO: how store bit vector? pointer or full calss
+  //std::vector<z3::expr> constraints = { { z3_state["constraints"] }, { z3_state["stack"] == 0x1000 } };
+  //get_first_offset()
   int smth = 2;
 }
 

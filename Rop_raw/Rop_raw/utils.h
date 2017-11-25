@@ -21,6 +21,8 @@ std::string covert_int2hex(const uint64_t value);
 std::string convert_string2ascii(const std::string& string);
 std::string convert_ascii2string(const std::string& ascii_code,const int radix);
 int32_t gen_find(const std::string& subseq, const std::string& generator);
+//TODO: how store z3::expr?
 std::map<std::string, z3::expr> z3_new_state(z3::context& context, cpu::CPU_description& arch);
 z3::expr z3_read_bits(z3::expr& bv, const int offset, const int size = 0);
+std::string unique_name(std::string name);
 }

@@ -2,6 +2,7 @@
 
 namespace utils {
 const std::string alphabet = "abcdefghijklmnopqrstuvwxyz";
+int g_index = 0;
 
 std::string convert_ascii2string(const std::string& ascii_code,const int radix) {
   std::string newString;
@@ -64,12 +65,18 @@ uint64_t get_random_page(const cpu::CPU_description arch) {
   return random_int(0, pow(2, arch.bits - 1)) & arch.page_mask;
 };
 
+std::string unique_name(std::string name) {
+  return (name + "_" +std::to_string(g_index++));
+}
+
 std::map<std::string, z3::expr> z3_new_state(z3::context& context, cpu::CPU_description& arch) {
   z3::expr stack_description = context.bv_const("stack",arch.page_size*8);
   z3::expr constraint_description = context.bv_const("smth",100); //TODO: is here ptr to smth?
-  std::map<std::string, z3::expr> state = { { "stack", stack_description }, { "constartaints", constraint_description} };
+  std::map<std::string, z3::expr> state = { { unique_name("stack"), stack_description }, { "constartaints", constraint_description} };
   for (auto const& current_reg : arch.common_regs_) {
-    //state[];
+    std::string reg_str = unique_name(current_reg.second);
+    state.insert(std::pair<std::string, z3::expr>(reg_str,
+      context.bv_const(reg_str.c_str(), arch.bits)));
   }
   return state;
 }

@@ -105,6 +105,7 @@ class Gadget { // as RealGadget in script
   int mov = 0; //clean stack on N bytes
   ropperdis::Emulator emu;
   z3::context z3_context;
+  //TODO: how store z3 state?
   std::map<std::string, z3::expr> z3_state;
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
