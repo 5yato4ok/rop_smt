@@ -98,8 +98,8 @@ void Gadget::analize() {
   std::map<uint32_t, uc_x86_reg> init_regs;
   for (auto const& current_reg : arch_description.common_regs_) {
     std::string random_data;
-    if (current_reg.first == arch_description.instruction_pointer ||
-      current_reg.first == arch_description.stack_pointer) {
+    if (current_reg.first == arch_description.instruction_pointer.begin()->first ||
+      current_reg.first == arch_description.stack_pointer.begin()->first) {
       random_data = "";
       continue;
     }
@@ -123,21 +123,39 @@ void Gadget::analize() {
     }
    }
 
-  if (regs_condition[arch_description.stack_pointer][0] == "junk") {
-    mov = emu.Get_reg_value(arch_description.stack_pointer) - stack;
-    regs_condition[arch_description.stack_pointer] = { "add", std::to_string(mov) };
+  if (regs_condition[arch_description.stack_pointer.begin()->first][0] == "junk") {
+    mov = emu.Get_reg_value(arch_description.stack_pointer.begin()->first) - stack;
+    regs_condition[arch_description.stack_pointer.begin()->first] = { "add", std::to_string(mov) };
   }
   is_analized = true;
 }
 
+std::map<std::string, z3::expr_vector> Gadget::start_map() {
+  std::map<std::string, z3::expr_vector> result;
+  z3_state[get_arch_info().instruction_pointer.begin()->second];
+
+  //  utils::z3_read_bits(z3_state[get_arch_info().stack_pointer.begin()->second], 0, get_arch_info().bits);
+
+  return result;
+};
+std::map<std::string, z3::expr_vector> Gadget::smt_map() {
+  std::map<std::string, z3::expr_vector> result;
+  return result;
+};
+
 void Gadget::map() {
+  start_map();
+  smt_map(); // in wich calls build round. in wich calls map for real gadget
+}
+
+std::map<std::string, z3::expr_vector> Gadget::gadget_map() {
+  std::map<std::string, z3::expr_vector> result;
   if (!is_analized)
-    return;
+    return result;
   z3_state = utils::z3_new_state(z3_context, emu.get_description());
-  //TODO: how store bit vector? pointer or full calss
-  //std::vector<z3::expr> constraints = { { z3_state["constraints"] }, { z3_state["stack"] == 0x1000 } };
-  //get_first_offset()
+  //z3_state["constraints"].push_back(z3_state[emu.get_description().instruction_pointer.begin()->second] == address);
   int smth = 2;
+  return result;
 }
 
 //def map(self, ins) :

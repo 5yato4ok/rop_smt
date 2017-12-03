@@ -69,16 +69,29 @@ std::string unique_name(std::string name) {
   return (name + "_" +std::to_string(g_index++));
 }
 
-std::map<std::string, z3::expr> z3_new_state(z3::context& context, cpu::CPU_description& arch) {
-  z3::expr stack_description = context.bv_const("stack",arch.page_size*8);
-  z3::expr constraint_description = context.bv_const("smth",100); //TODO: is here ptr to smth?
-  std::map<std::string, z3::expr> state = { { unique_name("stack"), stack_description }, { "constartaints", constraint_description} };
+std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, cpu::CPU_description& arch) {
+  z3::expr_vector stack_description_v(context);  
+  stack_description_v.push_back(context.bv_const(unique_name("stack").c_str(), arch.page_size * 8));
+  z3::expr_vector constraint_description_v(context);
+  constraint_description_v.push_back(context.bv_const("smth", 100)); //TODO: is here ptr to smth?
+  std::map<std::string, z3::expr_vector> state = { { arch.stack_pointer.begin()->second, stack_description_v },
+  { "constartaints",{ constraint_description_v } } };
   for (auto const& current_reg : arch.common_regs_) {
-    std::string reg_str = unique_name(current_reg.second);
-    state.insert(std::pair<std::string, z3::expr>(reg_str,
-      context.bv_const(reg_str.c_str(), arch.bits)));
-  }
+    z3::expr_vector reg_description_v(context);
+    reg_description_v.push_back(context.bv_const(unique_name(current_reg.second).c_str(), arch.bits));
+    state.insert(std::pair<std::string, z3::expr_vector>(current_reg.second, reg_description_v));
+  };
   return state;
+}
+
+z3::expr_vector z3_read_bits(z3::expr_vector& bv,z3::context context, const int offset, int size = 0) {
+  if (size != 0) {
+    size = bv.size() - offset;
+  }
+  z3::expr tmp_result = bv[0].extract(offset, size);
+  z3::expr_vector result(context);
+  result.push_back(bv[0].extract((offset + size - 1), size));
+  return result;
 }
 
 }

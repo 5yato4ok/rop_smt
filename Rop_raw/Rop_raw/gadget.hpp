@@ -105,14 +105,17 @@ class Gadget { // as RealGadget in script
   int mov = 0; //clean stack on N bytes
   ropperdis::Emulator emu;
   z3::context z3_context;
-  //TODO: how store z3 state?
-  std::map<std::string, z3::expr> z3_state;
+  int address;
+  std::map<std::string, z3::expr_vector> z3_state;
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
   unsigned int m_size; /*!< the size in byte of the gadget*/
   std::list<Instruction*> m_instructions; /*!< the list of the different instructions composing the gadget*/
   std::vector<unsigned long long> m_offsets; /*!< the vector which stores where you can find the same gadget ; those offsets are relative to m_va_section*/
   std::vector<unsigned long long> m_va_sections; /*!< the virtual address of the section where the instructions were found*/
+  std::map<std::string, z3::expr_vector> start_map();
+  std::map<std::string, z3::expr_vector> smt_map();
+  std::map<std::string, z3::expr_vector> gadget_map();
 
 };
 

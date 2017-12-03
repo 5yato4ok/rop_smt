@@ -12,8 +12,8 @@ class CPU_description {
 public:
   CPU_description(uc_mode mode, uc_arch arch);
   int bits;
-  uc_x86_reg instruction_pointer;
-  uc_x86_reg stack_pointer;
+  std::map<uc_x86_reg, std::string> instruction_pointer;
+  std::map<uc_x86_reg, std::string> stack_pointer;
   int64_t address_mask;
   int64_t page_mask;
   int64_t page_size;
