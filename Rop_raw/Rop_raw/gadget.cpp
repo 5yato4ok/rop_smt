@@ -132,10 +132,9 @@ void Gadget::analize() {
 
 std::map<std::string, z3::expr_vector> Gadget::start_map() {
   std::map<std::string, z3::expr_vector> result;
-  z3_state[get_arch_info().instruction_pointer.begin()->second];
-
-  //  utils::z3_read_bits(z3_state[get_arch_info().stack_pointer.begin()->second], 0, get_arch_info().bits);
-
+  result = z3_state;
+  std::map<std::string, z3::expr_vector>::iterator ptr = result.find(get_arch_info().instruction_pointer.begin()->second);
+  ptr->second = utils::z3_read_bits(ptr->second, z3_context, 0, get_arch_info().bits);
   return result;
 };
 std::map<std::string, z3::expr_vector> Gadget::smt_map() {
@@ -144,6 +143,7 @@ std::map<std::string, z3::expr_vector> Gadget::smt_map() {
 };
 
 void Gadget::map() {
+  z3_state = utils::z3_new_state(z3_context, emu.get_description());
   start_map();
   smt_map(); // in wich calls build round. in wich calls map for real gadget
 }
@@ -152,7 +152,7 @@ std::map<std::string, z3::expr_vector> Gadget::gadget_map() {
   std::map<std::string, z3::expr_vector> result;
   if (!is_analized)
     return result;
-  z3_state = utils::z3_new_state(z3_context, emu.get_description());
+  //z3_state = utils::z3_new_state(z3_context, emu.get_description());
   //z3_state["constraints"].push_back(z3_state[emu.get_description().instruction_pointer.begin()->second] == address);
   int smth = 2;
   return result;

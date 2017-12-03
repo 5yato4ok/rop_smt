@@ -18,6 +18,7 @@ CPU_description::CPU_description(uc_mode mode, uc_arch arch) :
       page_size = 0x1000;
       return_instructions = "\xc3";
       alignment = 1;
+      initialized_ = true;
       break;
     case UC_MODE_64:
       bits = 64;
@@ -31,6 +32,7 @@ CPU_description::CPU_description(uc_mode mode, uc_arch arch) :
       page_size = 0x1000;
       return_instructions = "\xc3";
       alignment = 1;
+      initialized_ = true;
       break;
     default:
       initialized_ = false;

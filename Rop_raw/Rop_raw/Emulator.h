@@ -20,7 +20,7 @@ public:
   uc_err Run(const uint64_t adress, const uint64_t size);
   const bool Is_initialized() const { return initialized; }
   const bool Code_mapped() const { return code_mapped; }
-  cpu::CPU_description get_description() { return description_; };
+  const cpu::CPU_description& get_description() { return description_; };
 private:
   uint64_t page;
   const cpu::CPU_description description_;

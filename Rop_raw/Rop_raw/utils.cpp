@@ -28,7 +28,6 @@ std::string convert_string2ascii(const std::string& string) {
   return result_str.str();
 }
 
-//TODO: How get number of byte to clean stack?
 int32_t gen_find(const std::string& subseq, const std::string& generator) {
   int32_t pos = 0;
   std::string saved;
@@ -61,7 +60,7 @@ uint64_t random_int(const uint64_t start, const uint64_t end) {
   return dist(mt);
 }
 
-uint64_t get_random_page(const cpu::CPU_description arch) {
+uint64_t get_random_page(const cpu::CPU_description& arch) {
   return random_int(0, pow(2, arch.bits - 1)) & arch.page_mask;
 };
 
@@ -69,7 +68,7 @@ std::string unique_name(std::string name) {
   return (name + "_" +std::to_string(g_index++));
 }
 
-std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, cpu::CPU_description& arch) {
+std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, const cpu::CPU_description& arch) {
   z3::expr_vector stack_description_v(context);  
   stack_description_v.push_back(context.bv_const(unique_name("stack").c_str(), arch.page_size * 8));
   z3::expr_vector constraint_description_v(context);
@@ -84,13 +83,13 @@ std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, cpu::C
   return state;
 }
 
-z3::expr_vector z3_read_bits(z3::expr_vector& bv,z3::context context, const int offset, int size = 0) {
-  if (size != 0) {
+z3::expr_vector z3_read_bits(z3::expr_vector& bv,z3::context& context, const int offset, int size) {
+  if (size == -1) {
     size = bv.size() - offset;
   }
-  z3::expr tmp_result = bv[0].extract(offset, size);
   z3::expr_vector result(context);
-  result.push_back(bv[0].extract((offset + size - 1), size));
+  bv[0].extract((offset + size - 1), size);
+  //result.push_back();
   return result;
 }
 
