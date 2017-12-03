@@ -97,7 +97,7 @@ class Gadget { // as RealGadget in script
       return g->get_disassembly() < d->get_disassembly();
     }
   };
-  const cpu::CPU_description& get_arch_info() { return emu.get_description(); };
+  const cpu::CPU_description& get_arch_info() const { return emu.get_description(); };
   void analize();
   void map();
  private:
