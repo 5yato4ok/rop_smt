@@ -106,6 +106,7 @@ class Gadget { // as RealGadget in script
   ropperdis::Emulator emu;
   z3::context z3_context;
   int address;
+  //TODO change to some different method
   std::map<std::string, z3::expr_vector> z3_state;
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/

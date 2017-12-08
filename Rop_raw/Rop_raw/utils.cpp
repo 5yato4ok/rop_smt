@@ -67,14 +67,15 @@ uint64_t get_random_page(const cpu::CPU_description& arch) {
 std::string unique_name(std::string name) {
   return (name + "_" +std::to_string(g_index++));
 }
-
+//TODO: change saving method. 
 std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, const cpu::CPU_description& arch) {
   z3::expr_vector stack_description_v(context);  
   stack_description_v.push_back(context.bv_const(unique_name("stack").c_str(), arch.page_size * 8));
   z3::expr_vector constraint_description_v(context);
-  constraint_description_v.push_back(context.bv_const("smth", 100)); //TODO: is here ptr to smth?
-  std::map<std::string, z3::expr_vector> state = { { arch.stack_pointer.begin()->second, stack_description_v },
+  constraint_description_v.push_back(context.bv_const("trash", 100)); //TODO: is here ptr to smth?
+  std::map<std::string, z3::expr_vector> state = { { "stack", stack_description_v },
   { "constartaints",{ constraint_description_v } } };
+  int size = stack_description_v.size();
   for (auto const& current_reg : arch.common_regs_) {
     z3::expr_vector reg_description_v(context);
     reg_description_v.push_back(context.bv_const(unique_name(current_reg.second).c_str(), arch.bits));
@@ -83,13 +84,14 @@ std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, const 
   return state;
 }
 
-z3::expr_vector z3_read_bits(z3::expr_vector& bv,z3::context& context, const int offset, int size) {
+z3::expr_vector z3_read_bits(z3::expr_vector& bv, z3::context& context, const int offset,int size) {
   if (size == -1) {
-    size = bv.size() - offset;
-  }
+    //size = bv.size() - offset;
+  };
   z3::expr_vector result(context);
-  bv[0].extract((offset + size - 1), size);
-  //result.push_back();
+  z3::expr test = bv[0];
+  z3::expr smth = test.extract(size,(offset + size - 1));
+  result.push_back(bv[0].extract(size,(offset + size - 1)));
   return result;
 }
 
