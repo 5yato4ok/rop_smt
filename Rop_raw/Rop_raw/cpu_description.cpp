@@ -11,7 +11,7 @@ CPU_description::CPU_description(uc_mode mode, uc_arch arch) :
       instruction_pointer.insert(std::pair<uc_x86_reg, std::string>(UC_X86_REG_EIP, "eip"));
       stack_pointer.insert(std::pair<uc_x86_reg, std::string>(UC_X86_REG_ESP, "esp"));
       common_regs_ = decltype(common_regs_){{ UC_X86_REG_EAX, "eax" }, { UC_X86_REG_ECX, "ecx" }, { UC_X86_REG_EDX, "edx" },
-      { UC_X86_REG_EBX, "ebx" }, { UC_X86_REG_ESP, "esp" }, { UC_X86_REG_EBP, "ebp" }, //change to enum
+      { UC_X86_REG_EBX, "ebx" }, { UC_X86_REG_ESP, "esp" }, { UC_X86_REG_EBP, "ebp" },
       { UC_X86_REG_ESI, "esi" }, { UC_X86_REG_EDI, "edi" }, { UC_X86_REG_EIP, "eip" } };
       address_mask = 0xffffffff;
       page_mask = 0xfffff000;

@@ -75,12 +75,16 @@ std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, const 
   constraint_description_v.push_back(context.bv_const("trash", 100)); //TODO: is here ptr to smth?
   std::map<std::string, z3::expr_vector> state = { { "stack", stack_description_v },
   { "constartaints",{ constraint_description_v } } };
-  int size = stack_description_v.size();
+  
   for (auto const& current_reg : arch.common_regs_) {
     z3::expr_vector reg_description_v(context);
     reg_description_v.push_back(context.bv_const(unique_name(current_reg.second).c_str(), arch.bits));
     state.insert(std::pair<std::string, z3::expr_vector>(current_reg.second, reg_description_v));
   };
+  auto ptr_stack = state.find("stack");
+  //
+  z3::expr_vector test = ptr_stack->second;
+  int size = test.size();
   return state;
 }
 
