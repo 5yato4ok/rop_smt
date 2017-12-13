@@ -24,5 +24,6 @@ int32_t gen_find(const std::string& subseq, const std::string& generator);
 //TODO: how store z3::expr?
 std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, const cpu::CPU_description& arch);
 z3::expr_vector z3_read_bits(z3::expr_vector& bv, z3::context& context, const int offset, int size = -1);
+size_t get_bit_vector_size(z3::expr& bv, z3::context& context);
 std::string unique_name(std::string name);
 }

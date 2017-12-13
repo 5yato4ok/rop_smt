@@ -139,6 +139,7 @@ std::map<std::string, z3::expr_vector> Gadget::start_map() {
   ptr_ip->second = utils::z3_read_bits(ptr_stack->second, z3_context, 0,get_arch_info().bits);
   auto ptr_sp = result.find(get_arch_info().stack_pointer.begin()->second);
   ptr_sp->second[0] = ptr_sp->second[0] + (get_arch_info().bits >> 3);
+  ptr_stack->second = utils::z3_read_bits(ptr_stack->second, z3_context, get_arch_info().bits);
   return result;
 };
 std::map<std::string, z3::expr_vector> Gadget::smt_map() {

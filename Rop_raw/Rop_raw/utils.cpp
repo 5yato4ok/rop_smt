@@ -84,21 +84,19 @@ std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, const 
     //state.emplace(current_reg.second, reg_description_v);
     state.insert({ current_reg.second, std::forward<z3::expr_vector &>(reg_description_v) });
   };
-  auto ptr_stack = state.find("eax");
-  //
-  z3::expr_vector test = ptr_stack->second;
-  int size = test.size();
   return state;
+}
+
+size_t get_bit_vector_size(z3::expr& bv, z3::context& context) {
+  return Z3_get_bv_sort_size(context, Z3_get_sort(context, bv));
 }
 
 z3::expr_vector z3_read_bits(z3::expr_vector& bv, z3::context& context, const int offset,int size) {
   if (size == -1) {
-    //size = bv.size() - offset;
+    size = get_bit_vector_size(bv[0], context) - offset;
   };
   z3::expr_vector result(context);
-  z3::expr test = bv[0];
-  z3::expr smth = test.extract(size,(offset + size - 1));
-  result.push_back(bv[0].extract(size,(offset + size - 1)));
+  result.push_back(bv[0].extract((offset + size - 1),offset));
   return result;
 }
 
