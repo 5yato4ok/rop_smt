@@ -73,15 +73,18 @@ std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, const 
   stack_description_v.push_back(context.bv_const(unique_name("stack").c_str(), arch.page_size * 8));
   z3::expr_vector constraint_description_v(context);
   constraint_description_v.push_back(context.bv_const("trash", 100)); //TODO: is here ptr to smth?
-  std::map<std::string, z3::expr_vector> state = { { "stack", stack_description_v },
-  { "constartaints",{ constraint_description_v } } };
-  
+  std::map<std::string, z3::expr_vector> state;
+  //state.emplace("stack", stack_description_v);
+  state.insert({ "stack", std::forward<z3::expr_vector &>(stack_description_v) });
+  state.insert({ "constraints", std::forward<z3::expr_vector &>(constraint_description_v) });
+  //state.emplace("constartaints", constraint_description_v);
   for (auto const& current_reg : arch.common_regs_) {
     z3::expr_vector reg_description_v(context);
     reg_description_v.push_back(context.bv_const(unique_name(current_reg.second).c_str(), arch.bits));
-    state.insert(std::pair<std::string, z3::expr_vector>(current_reg.second, reg_description_v));
+    //state.emplace(current_reg.second, reg_description_v);
+    state.insert({ current_reg.second, std::forward<z3::expr_vector &>(reg_description_v) });
   };
-  auto ptr_stack = state.find("stack");
+  auto ptr_stack = state.find("eax");
   //
   z3::expr_vector test = ptr_stack->second;
   int size = test.size();

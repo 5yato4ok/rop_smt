@@ -133,14 +133,12 @@ void Gadget::analize() {
 std::map<std::string, z3::expr_vector> Gadget::start_map() {
   std::map<std::string, z3::expr_vector> result;
   result = z3_state;
+  //TODO: if change iterator will it change the value?
   auto ptr_ip = result.find(get_arch_info().instruction_pointer.begin()->second);
   auto ptr_stack = z3_state.find("stack");
-  //
-  z3::expr_vector test = ptr_stack->second;
-  int size = test.size();
-  //
   ptr_ip->second = utils::z3_read_bits(ptr_stack->second, z3_context, 0,get_arch_info().bits);
   auto ptr_sp = result.find(get_arch_info().stack_pointer.begin()->second);
+  ptr_sp->second[0] = ptr_sp->second[0] + (get_arch_info().bits >> 3);
   return result;
 };
 std::map<std::string, z3::expr_vector> Gadget::smt_map() {
@@ -150,11 +148,6 @@ std::map<std::string, z3::expr_vector> Gadget::smt_map() {
 
 void Gadget::map() {
   z3_state = utils::z3_new_state(z3_context, emu.get_description());
-  auto ptr_stack = z3_state.find("stack");
-  //TODO: FIX. now all expr_vector are returned wrong
-  z3::expr_vector test = ptr_stack->second;
-  int size = test.size();
-
   start_map();
   smt_map(); // in wich calls build round. in wich calls map for real gadget
 }
