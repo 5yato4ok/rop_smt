@@ -12,15 +12,17 @@ namespace ropperdis{
 
 class Ropperdis {
  public:
-  Ropperdis(std::fstream& input);
-  std::multiset<Gadget*, Gadget::Sort> find_rop(uint32_t m_depth = 3);
+  Ropperdis(std::fstream& input, uint32_t m_depth = 3);
+  std::multiset<Gadget*, Gadget::Sort> get_rop_resuslt() { return found_gadgets; };
+  
   //TODO smth like that
   //std::multiset<Gadget*>generate_chain(uint32_t levels,input_condition_code)
   //std::set_condition
 
   bool Initialized() const { return initialized_; }
  private:
-   std::multiset<Gadget*> Ropperdis::find_gadget_in_memory(const unsigned char* data, unsigned long long size, 
+   std::multiset<Gadget*, Gadget::Sort> find_rop();
+   std::multiset<Gadget*> find_gadget_in_memory(const unsigned char* data, unsigned long long size, 
      unsigned long long vaddr, uint32_t m_depth = 3);
   std::multiset<Gadget*>find_all_gadget_from_ret(const unsigned char* data, unsigned long long vaddr, 
     const DISASM& ending_instr_disasm, unsigned int len_ending_instr);
@@ -35,6 +37,7 @@ class Ropperdis {
   const uc_arch arch_ = UC_ARCH_X86;
   bool init();
   bool initialized_ = false;
+  std::multiset<Gadget*, Gadget::Sort> found_gadgets;
   std::fstream& input_file;
   //z3::solver z3_smt;
 };

@@ -91,6 +91,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Rop.cpp" />
     <ClCompile Include="section.cpp" />
+    <ClCompile Include="smt_gadget.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +106,7 @@
     <ClInclude Include="Rop.h" />
     <ClInclude Include="safeint.hpp" />
     <ClInclude Include="section.hpp" />
+    <ClInclude Include="smt_gadget.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

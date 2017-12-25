@@ -150,7 +150,7 @@ std::map<std::string, z3::expr_vector> Gadget::build_round(std::map<std::string,
   z3::expr_vector empty_vector(z3_context);
   //TODO: fix this empty vector
   ptr_constraints->second = empty_vector;
-  for 
+  //for 
   return fini;
 }
 

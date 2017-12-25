@@ -8,10 +8,10 @@
 //libz3.dll must in the same folder as result exe
 int main() {
   std::fstream file("x86.exe");
-  ropperdis::Ropperdis mngr(file);
+  ropperdis::Ropperdis mngr(file,3);
   std::multiset<Gadget*, Gadget::Sort> result;
   if (mngr.Initialized()) {
-    result = mngr.find_rop();
+    result = mngr.get_rop_resuslt();
   }
   std::multiset<Gadget*, Gadget::Sort>::iterator it = result.begin();
   Gadget* test = *it;

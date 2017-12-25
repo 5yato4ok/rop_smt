@@ -3,7 +3,7 @@
 
 namespace ropperdis {
 
-std::multiset<Gadget*, Gadget::Sort> Ropperdis::find_rop(uint32_t m_depth) {
+std::multiset<Gadget*, Gadget::Sort> Ropperdis::find_rop() {
   std::multiset<Gadget*, Gadget::Sort> gadgets_found;
   /* To do a ROP gadget research, we need to know the executable section */
   std::vector<Section*> executable_sections = exe_info.get_executables_section(input_file);
@@ -37,7 +37,8 @@ std::multiset<Gadget*, Gadget::Sort> Ropperdis::find_rop(uint32_t m_depth) {
   return gadgets_found;
 }
 
-Ropperdis::Ropperdis(std::fstream& input) : input_file(input){
+Ropperdis::Ropperdis(std::fstream& input,uint32_t m_depth_) : 
+  input_file(input), m_depth(m_depth_){
   if (init()) {
     initialized_ = true;
   }
@@ -45,7 +46,8 @@ Ropperdis::Ropperdis(std::fstream& input) : input_file(input){
 
 bool Ropperdis::init() {
   mode_ = exe_info.extract_information_from_binary(input_file);
-  if (mode_ == UC_MODE_V9) {
+  found_gadgets = find_rop();
+  if (mode_ == UC_MODE_V9 || found_gadgets.empty()) {
     printf("ERROR while extracting info");
     return false;
   }
