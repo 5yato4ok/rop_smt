@@ -23,9 +23,6 @@
     <ClCompile Include="Emulator.cpp">
       <Filter>unicorn_emulator</Filter>
     </ClCompile>
-    <ClCompile Include="Rop.cpp">
-      <Filter>rop_mngr</Filter>
-    </ClCompile>
     <ClCompile Include="gadget.cpp">
       <Filter>gadget</Filter>
     </ClCompile>
@@ -44,16 +41,16 @@
     <ClCompile Include="utils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="smt_gadget.cpp">
-      <Filter>gadget</Filter>
+    <ClCompile Include="Rop_finder.cpp">
+      <Filter>rop_mngr</Filter>
+    </ClCompile>
+    <ClCompile Include="sequence_builder.cpp">
+      <Filter>rop_mngr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Emulator.h">
       <Filter>unicorn_emulator</Filter>
-    </ClInclude>
-    <ClInclude Include="Rop.h">
-      <Filter>rop_mngr</Filter>
     </ClInclude>
     <ClInclude Include="gadget.hpp">
       <Filter>gadget</Filter>
@@ -85,8 +82,11 @@
     <ClInclude Include="utils.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="smt_gadget.h">
-      <Filter>gadget</Filter>
+    <ClInclude Include="Rop_finder.h">
+      <Filter>rop_mngr</Filter>
+    </ClInclude>
+    <ClInclude Include="sequence_builder.h">
+      <Filter>rop_mngr</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

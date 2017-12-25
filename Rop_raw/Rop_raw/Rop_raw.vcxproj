@@ -89,9 +89,9 @@
     <ClCompile Include="gadget.cpp" />
     <ClCompile Include="instruction.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Rop.cpp" />
+    <ClCompile Include="Rop_finder.cpp" />
     <ClCompile Include="section.cpp" />
-    <ClCompile Include="smt_gadget.cpp" />
+    <ClCompile Include="sequence_builder.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -103,10 +103,10 @@
     <ClInclude Include="gadget.hpp" />
     <ClInclude Include="instruction.hpp" />
     <ClInclude Include="pe_struct.hpp" />
-    <ClInclude Include="Rop.h" />
+    <ClInclude Include="Rop_finder.h" />
     <ClInclude Include="safeint.hpp" />
     <ClInclude Include="section.hpp" />
-    <ClInclude Include="smt_gadget.h" />
+    <ClInclude Include="sequence_builder.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

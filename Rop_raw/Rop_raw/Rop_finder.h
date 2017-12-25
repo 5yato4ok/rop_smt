@@ -1,18 +1,19 @@
 #pragma once
-#include <fstream>
-#include <set>
+
 #include "beaengine.h"
 #include "safeint.hpp"
 #include "executable_format.hpp"
 #include "gadget.hpp"
 #include <z3++.h>
+#include <cstdint>
+#include <fstream>
+#include <set>
 
+namespace findrop_helper{
 
-namespace ropperdis{
-
-class Ropperdis {
+class Rop_finder {
  public:
-  Ropperdis(std::fstream& input, uint32_t m_depth = 3);
+  Rop_finder(std::fstream& input, uint32_t m_depth = 3);
   std::multiset<Gadget*, Gadget::Sort> get_rop_resuslt() { return found_gadgets; };
   
   //TODO smth like that
@@ -21,6 +22,7 @@ class Ropperdis {
 
   bool Initialized() const { return initialized_; }
  private:
+   std::vector<Section*> executable_sections;
    std::multiset<Gadget*, Gadget::Sort> find_rop();
    std::multiset<Gadget*> find_gadget_in_memory(const unsigned char* data, unsigned long long size, 
      unsigned long long vaddr, uint32_t m_depth = 3);
@@ -35,11 +37,10 @@ class Ropperdis {
   ExecutableFormat  exe_info;
   uc_mode mode_;
   const uc_arch arch_ = UC_ARCH_X86;
-  bool init();
+  bool init(std::fstream& input_file);
   bool initialized_ = false;
   std::multiset<Gadget*, Gadget::Sort> found_gadgets;
-  std::fstream& input_file;
   //z3::solver z3_smt;
 };
 
-}//namespace ropperdis
+}//namespace findrop_helper

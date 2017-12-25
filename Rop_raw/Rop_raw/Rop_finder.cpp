@@ -1,24 +1,17 @@
-#include "Rop.h"
+#include "Rop_finder.h"
 #define BEA_ENGINE_STATIC
 
-namespace ropperdis {
+namespace findrop_helper {
 
-std::multiset<Gadget*, Gadget::Sort> Ropperdis::find_rop() {
+std::multiset<Gadget*, Gadget::Sort> Rop_finder::find_rop() {
   std::multiset<Gadget*, Gadget::Sort> gadgets_found;
-  /* To do a ROP gadget research, we need to know the executable section */
-  std::vector<Section*> executable_sections = exe_info.get_executables_section(input_file);
-  if (executable_sections.size() == 0)
-    std::cout << "It seems your binary haven't executable sections." << std::endl;
-
   /* Walk the executable sections */
   for (std::vector<Section*>::iterator it_sec = executable_sections.begin(); it_sec != executable_sections.end(); ++it_sec) {
     std::cout << "in " << (*it_sec)->get_name() << std::endl;
     unsigned long long va_section = (*it_sec)->get_vaddr();
 
-    /* Let the cpu research */
     std::multiset<Gadget*> gadgets = find_gadget_in_memory((*it_sec)->get_section_buffer(),
       (*it_sec)->get_size(), va_section, m_depth);
-
     std::cout << gadgets.size() << " found." << std::endl << std::endl;
 
     /*
@@ -33,28 +26,27 @@ std::multiset<Gadget*, Gadget::Sort> Ropperdis::find_rop() {
     for (std::multiset<Gadget*>::iterator it_g = gadgets.begin(); it_g != gadgets.end(); ++it_g)
       gadgets_found.insert(*it_g);
   }
-
   return gadgets_found;
 }
 
-Ropperdis::Ropperdis(std::fstream& input,uint32_t m_depth_) : 
-  input_file(input), m_depth(m_depth_){
-  if (init()) {
+Rop_finder::Rop_finder(std::fstream& input,uint32_t m_depth_) : m_depth(m_depth_) {
+  if (init(input)) {
     initialized_ = true;
   }
 };
 
-bool Ropperdis::init() {
+bool Rop_finder::init(std::fstream& input_file) {
   mode_ = exe_info.extract_information_from_binary(input_file);
+  executable_sections = exe_info.get_executables_section(input_file);
   found_gadgets = find_rop();
-  if (mode_ == UC_MODE_V9 || found_gadgets.empty()) {
+  if (mode_ == UC_MODE_V9 || executable_sections.empty() ||found_gadgets.empty()) {
     printf("ERROR while extracting info");
     return false;
   }
   return true;
 }
 
-void Ropperdis::init_disasm_struct(DISASM& d) {
+void Rop_finder::init_disasm_struct(DISASM& d) {
   d = { 0 };
   // those options are mostly display option for the disassembler engine 
   //d.Options = m_opts;
@@ -68,7 +60,7 @@ void Ropperdis::init_disasm_struct(DISASM& d) {
   }
 }
 
-std::multiset<Gadget*> Ropperdis::find_all_gadget_from_ret(const unsigned char* data, unsigned long long vaddr,
+std::multiset<Gadget*> Rop_finder::find_all_gadget_from_ret(const unsigned char* data, unsigned long long vaddr,
   const DISASM& ending_instr_disasm, unsigned int len_ending_instr) {
   std::multiset<Gadget*> gadgets;
   DISASM dis;
@@ -147,7 +139,7 @@ std::multiset<Gadget*> Ropperdis::find_all_gadget_from_ret(const unsigned char* 
   return gadgets;
 }
 
-bool Ropperdis::is_valid_ending_instruction_nasm(DISASM& ending_instr_d) {
+bool Rop_finder::is_valid_ending_instruction_nasm(DISASM& ending_instr_d) {
   Int32 branch_type = ending_instr_d.Instruction.BranchType;
   UInt64 addr_value = ending_instr_d.Instruction.AddrValue;
   char *mnemonic = ending_instr_d.Instruction.Mnemonic; 
@@ -173,7 +165,7 @@ bool Ropperdis::is_valid_ending_instruction_nasm(DISASM& ending_instr_d) {
     strstr(completeInstr, "far") == NULL);
 }
 
-bool Ropperdis::is_valid_ending_instruction_att(DISASM& ending_instr_d) {
+bool Rop_finder::is_valid_ending_instruction_att(DISASM& ending_instr_d) {
   Int32 branch_type = ending_instr_d.Instruction.BranchType;
   UInt64 addr_value = ending_instr_d.Instruction.AddrValue;
   //TODO: change to string
@@ -203,7 +195,7 @@ bool Ropperdis::is_valid_ending_instruction_att(DISASM& ending_instr_d) {
     );
 }
 
-bool Ropperdis::is_valid_ending_instruction(DISASM& ending_instr_d) {
+bool Rop_finder::is_valid_ending_instruction(DISASM& ending_instr_d) {
   bool isAllowed = false;
   /*
   Work Around, BeaEngine in x64 mode disassemble "\xDE\xDB" as an instruction without disassembly
@@ -218,7 +210,7 @@ bool Ropperdis::is_valid_ending_instruction(DISASM& ending_instr_d) {
   return isAllowed;
 }
 
-bool Ropperdis::is_valid_instruction(DISASM& ending_instr_d) {
+bool Rop_finder::is_valid_instruction(DISASM& ending_instr_d) {
   Int32 branch_type = ending_instr_d.Instruction.BranchType;
   return (
     /*
@@ -253,7 +245,7 @@ bool Ropperdis::is_valid_instruction(DISASM& ending_instr_d) {
     );
 }
 
-std::multiset<Gadget*> Ropperdis::find_gadget_in_memory(const unsigned char* data, 
+std::multiset<Gadget*> Rop_finder::find_gadget_in_memory(const unsigned char* data, 
   unsigned long long size, unsigned long long vaddr, uint32_t m_depth_) {
   m_depth = m_depth_;
   std::multiset<Gadget*> merged_gadgets;
@@ -305,4 +297,4 @@ std::multiset<Gadget*> Ropperdis::find_gadget_in_memory(const unsigned char* dat
   return merged_gadgets;
 }
 
-} //namespace ropperdis
+} //namespace findrop_helper

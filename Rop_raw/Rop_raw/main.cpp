@@ -1,4 +1,4 @@
-#include "Rop.h"
+#include "Rop_finder.h"
 #include <fstream>
 
 #pragma warning (disable : 4996 ) //function may be unsafe
@@ -8,7 +8,7 @@
 //libz3.dll must in the same folder as result exe
 int main() {
   std::fstream file("x86.exe");
-  ropperdis::Ropperdis mngr(file,3);
+  findrop_helper::Rop_finder mngr(file, 3);
   std::multiset<Gadget*, Gadget::Sort> result;
   if (mngr.Initialized()) {
     result = mngr.get_rop_resuslt();
