@@ -133,6 +133,16 @@ void Gadget::analize() {
   is_analized = true;
 }
 
+std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::expr_vector> input_state) {
+  std::map<std::string, z3::expr_vector> result;
+  //if (!is_analized)
+  //  return result;
+  //z3_state = utils::z3_new_state(z3_context, emu.get_description());
+  //z3_state["constraints"].push_back(z3_state[emu.get_description().instruction_pointer.begin()->second] == address);
+  int smth = 2;
+  return result;
+};
+
 //def map(self, ins) :
 //assert self.analysed
 //outs = dict(ins)

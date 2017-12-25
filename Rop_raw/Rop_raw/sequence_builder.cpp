@@ -34,7 +34,9 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
   z3::expr_vector empty_vector(z3_context);
   //TODO: fix this empty vector
   ptr_constraints->second = empty_vector;
-  //for 
+  for (auto const & current_gadget : set_of_gadgets) { //probably wrong
+    fini = current_gadget->map(fini);
+  }
   return fini;
 }
 
@@ -62,16 +64,6 @@ void Sequence_builder::map() {
   size_t tmp = ptr_ip->second.size();
   bool check = ptr_ip->second[0].is_bv();
 
-}
-
-std::map<std::string, z3::expr_vector> Sequence_builder::gadget_map(std::map<std::string, z3::expr_vector> input_state) {
-  std::map<std::string, z3::expr_vector> result;
-  //if (!is_analized)
-  //  return result;
-  //z3_state = utils::z3_new_state(z3_context, emu.get_description());
-  //z3_state["constraints"].push_back(z3_state[emu.get_description().instruction_pointer.begin()->second] == address);
-  int smth = 2;
-  return result;
 }
 
 }

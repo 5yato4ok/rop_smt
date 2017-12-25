@@ -100,8 +100,7 @@ class Gadget { // as RealGadget in script
   };
   const cpu_info::CPU_description& get_arch_info() const { return emu.get_description(); };
   void analize();
-  //map is making under of sequence of gadgets
-  //void map();
+  std::map<std::string, z3::expr_vector> map(std::map<std::string, z3::expr_vector> input_state);
  private:
   //TODO: fix level intialization
   std::map <uc_x86_reg, std::vector<std::string>> regs_condition;
@@ -114,8 +113,6 @@ class Gadget { // as RealGadget in script
   std::list<Instruction*> m_instructions; /*!< the list of the different instructions composing the gadget*/
   std::vector<unsigned long long> m_offsets; /*!< the vector which stores where you can find the same gadget ; those offsets are relative to m_va_section*/
   std::vector<unsigned long long> m_va_sections; /*!< the virtual address of the section where the instructions were found*/
-
-
 };
 
 #endif
