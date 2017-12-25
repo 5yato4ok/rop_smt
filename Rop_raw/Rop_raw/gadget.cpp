@@ -4,6 +4,9 @@ Gadget::Gadget(uc_mode uc_mode_, uc_arch uc_arch_) :
 m_size(0),emu(uc_mode_,uc_arch_) {
 }
 
+Gadget::Gadget(const cpu_info::CPU_description& cpu_description) :
+m_size(0), emu(cpu_description) {
+}
 
 Gadget::~Gadget(void) {
   /* Avoid memory leaks */
@@ -128,66 +131,6 @@ void Gadget::analize() {
     regs_condition[arch_description.stack_pointer.begin()->first] = { "add", std::to_string(mov) };
   }
   is_analized = true;
-}
-
-std::map<std::string, z3::expr_vector> Gadget::start_map(std::map<std::string, z3::expr_vector> input_state) {
-  std::map<std::string, z3::expr_vector> result;
-  result = input_state;
-  //TODO: if change iterator will it change the value?
-  auto ptr_ip = result.find(get_arch_info().instruction_pointer.begin()->second);
-  auto ptr_stack = z3_state.find("stack");
-  ptr_ip->second = utils::z3_read_bits(ptr_stack->second, z3_context, 0,get_arch_info().bits);
-  auto ptr_sp = result.find(get_arch_info().stack_pointer.begin()->second);
-  ptr_sp->second[0] = ptr_sp->second[0] + (get_arch_info().bits >> 3);
-  ptr_stack->second = utils::z3_read_bits(ptr_stack->second, z3_context, get_arch_info().bits);
-  return result;
-};
-
-std::map<std::string, z3::expr_vector> Gadget::build_round(std::map<std::string, z3::expr_vector> input_state) {
-  std::map<std::string, z3::expr_vector> fini = utils::z3_new_state(z3_context,get_arch_info());
-  auto ptr_constraints = z3_state.find("constraints");
-  fini.insert({ "constraints", std::forward<z3::expr_vector &>(ptr_constraints->second) });
-  z3::expr_vector empty_vector(z3_context);
-  //TODO: fix this empty vector
-  ptr_constraints->second = empty_vector;
-  //for 
-  return fini;
-}
-
-std::map<std::string, z3::expr_vector> Gadget::smt_map(std::map<std::string, z3::expr_vector> input_state) {
-  std::map<std::string, z3::expr_vector> result;
-  result = input_state;
-  z3::expr_vector gadgets_v(z3_context);
-  for (int i = 0; i < levels; i++) {
-    auto ptr_ip = result.find(get_arch_info().instruction_pointer.begin()->second);
-    gadgets_v.push_back(ptr_ip->second[0]);
-    result = build_round(result);
-  }
-  result.insert({ "gadgets", std::forward<z3::expr_vector &>(gadgets_v) });
-  return result;
-};
-
-void Gadget::map() {
-  //TODO: fix multiple maps.are the needed
-  z3_state = utils::z3_new_state(z3_context, emu.get_description());
-  z3_state = start_map(z3_state);
-  z3_state = smt_map(z3_state); // in wich calls build round. in wich calls map for real gadget
-  
-  //checking
-  auto ptr_ip = z3_state.find("constraints");
-  size_t tmp = ptr_ip->second.size();
-  bool check = ptr_ip->second[0].is_bv();
-
-}
-
-std::map<std::string, z3::expr_vector> Gadget::gadget_map(std::map<std::string, z3::expr_vector> input_state) {
-  std::map<std::string, z3::expr_vector> result;
-  if (!is_analized)
-    return result;
-  //z3_state = utils::z3_new_state(z3_context, emu.get_description());
-  //z3_state["constraints"].push_back(z3_state[emu.get_description().instruction_pointer.begin()->second] == address);
-  int smth = 2;
-  return result;
 }
 
 //def map(self, ins) :

@@ -60,7 +60,7 @@ uint64_t random_int(const uint64_t start, const uint64_t end) {
   return dist(mt);
 }
 
-uint64_t get_random_page(const cpu::CPU_description& arch) {
+uint64_t get_random_page(const cpu_info::CPU_description& arch) {
   return random_int(0, pow(2, arch.bits - 1)) & arch.page_mask;
 };
 
@@ -68,7 +68,7 @@ std::string unique_name(std::string name) {
   return (name + "_" +std::to_string(g_index++));
 }
 //TODO: change saving method. 
-std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, const cpu::CPU_description& arch) {
+std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, const cpu_info::CPU_description& arch) {
   z3::expr_vector stack_description_v(context);  
   stack_description_v.push_back(context.bv_const(unique_name("stack").c_str(), arch.page_size * 8));
   z3::expr_vector constraint_description_v(context);

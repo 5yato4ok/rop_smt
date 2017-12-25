@@ -11,6 +11,10 @@ Emulator::Emulator(const uc_mode mode_, const uc_arch arch_):
   description_(mode_,arch_)
 {};
 
+Emulator::Emulator(const cpu_info::CPU_description& cpu_description) : 
+  description_(cpu_description) 
+{}
+
 bool Emulator::Init_unicorn() {
   uc_err err;
   err = uc_open(description_.arch_, description_.mode_, &uc);

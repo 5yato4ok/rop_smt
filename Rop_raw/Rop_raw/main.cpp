@@ -16,7 +16,7 @@ int main() {
   std::multiset<Gadget*, Gadget::Sort>::iterator it = result.begin();
   Gadget* test = *it;
   test->analize();
-  test->map();
+  //test->map();
   file.close();
   return 0;
 }

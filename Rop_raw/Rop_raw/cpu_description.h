@@ -7,10 +7,11 @@
 
 //TODO: do two different classes for x86 and x86-64
 //make all constant
-namespace cpu {
+namespace cpu_info {
 class CPU_description {
-public:
+ public:
   CPU_description(uc_mode mode, uc_arch arch);
+  CPU_description(const CPU_description& copy_value);
   int bits;
   std::map<uc_x86_reg, std::string> instruction_pointer;
   std::map<uc_x86_reg, std::string> stack_pointer;
@@ -19,8 +20,8 @@ public:
   int64_t page_size;
   std::string return_instructions;
   int alignment;
-  const uc_mode mode_;
-  const uc_arch arch_;
+  uc_mode mode_;
+  uc_arch arch_;
   std::map<uc_x86_reg, std::string> common_regs_;
   bool is_initialized() const { return initialized_; }
 private:

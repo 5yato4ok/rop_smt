@@ -19,7 +19,7 @@ class Rop_finder {
   //TODO smth like that
   //std::multiset<Gadget*>generate_chain(uint32_t levels,input_condition_code)
   //std::set_condition
-
+  const cpu_info::CPU_description& get_arch_info();
   bool Initialized() const { return initialized_; }
  private:
    std::vector<Section*> executable_sections;
@@ -34,9 +34,10 @@ class Rop_finder {
   bool is_valid_ending_instruction(DISASM& ending_instr_d);
   bool is_valid_instruction(DISASM& ending_instr_d);
   uint32_t m_depth;
+  
   ExecutableFormat  exe_info;
-  uc_mode mode_;
-  const uc_arch arch_ = UC_ARCH_X86;
+  cpu_info::CPU_description cpu_info; // for now only x86 architecture
+  
   bool init(std::fstream& input_file);
   bool initialized_ = false;
   std::multiset<Gadget*, Gadget::Sort> found_gadgets;

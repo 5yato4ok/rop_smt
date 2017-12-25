@@ -1,6 +1,21 @@
 #include "cpu_description.h"
 
-namespace cpu {
+namespace cpu_info {
+CPU_description::CPU_description(const CPU_description& copy_value) {
+  arch_ = copy_value.arch_;
+  mode_ = copy_value.mode_;
+  bits= copy_value.bits;
+  instruction_pointer= copy_value.instruction_pointer ;
+  stack_pointer= copy_value.stack_pointer ;
+  address_mask= copy_value.address_mask ;
+  page_mask= copy_value.page_mask ;
+  page_size= copy_value.page_size ;
+  return_instructions= copy_value.return_instructions;
+  alignment= copy_value.alignment ;
+  common_regs_= copy_value.common_regs_ ;
+  initialized_ = copy_value.initialized_;
+}
+
 CPU_description::CPU_description(uc_mode mode, uc_arch arch) :
   mode_(mode), arch_(arch) {
   switch (arch) {
@@ -37,8 +52,9 @@ CPU_description::CPU_description(uc_mode mode, uc_arch arch) :
     default:
       initialized_ = false;
     }
+    break;
   default:
     initialized_ = false;
   }
 };
-} //namespace cpu
+} //namespace cpu_info

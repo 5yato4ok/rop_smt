@@ -8,6 +8,7 @@ namespace ropperdis {
 class Emulator {
 public:
   Emulator(const uc_mode mode_, const uc_arch arch_);
+  Emulator(const cpu_info::CPU_description& cpu_description);
   ~Emulator();
   uc_engine *uc;
   
@@ -20,10 +21,10 @@ public:
   uc_err Run(const uint64_t adress, const uint64_t size);
   const bool Is_initialized() const { return initialized; }
   const bool Code_mapped() const { return code_mapped; }
-  const cpu::CPU_description& get_description() const { return description_; };
+  const cpu_info::CPU_description& get_description() const { return description_; };
 private:
   uint64_t page;
-  const cpu::CPU_description description_;
+  const cpu_info::CPU_description description_;
   bool initialized = false;
   bool code_mapped = false;
 };

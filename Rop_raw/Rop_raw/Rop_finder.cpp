@@ -3,6 +3,14 @@
 
 namespace findrop_helper {
 
+Rop_finder::Rop_finder(std::fstream& input, uint32_t m_depth_) : 
+m_depth(m_depth_), cpu_info(UC_MODE_V9, UC_ARCH_X86) {
+  if (init(input)) {
+    initialized_ = true;
+  }
+};
+
+
 std::multiset<Gadget*, Gadget::Sort> Rop_finder::find_rop() {
   std::multiset<Gadget*, Gadget::Sort> gadgets_found;
   /* Walk the executable sections */
@@ -29,17 +37,12 @@ std::multiset<Gadget*, Gadget::Sort> Rop_finder::find_rop() {
   return gadgets_found;
 }
 
-Rop_finder::Rop_finder(std::fstream& input,uint32_t m_depth_) : m_depth(m_depth_) {
-  if (init(input)) {
-    initialized_ = true;
-  }
-};
-
 bool Rop_finder::init(std::fstream& input_file) {
-  mode_ = exe_info.extract_information_from_binary(input_file);
+  uc_mode mode_ = exe_info.extract_information_from_binary(input_file);
   executable_sections = exe_info.get_executables_section(input_file);
+  cpu_info = cpu_info::CPU_description(mode_, UC_ARCH_X86); //TODO:change in future;
   found_gadgets = find_rop();
-  if (mode_ == UC_MODE_V9 || executable_sections.empty() ||found_gadgets.empty()) {
+  if (!cpu_info.is_initialized() || executable_sections.empty() ||found_gadgets.empty()) {
     printf("ERROR while extracting info");
     return false;
   }
@@ -50,14 +53,7 @@ void Rop_finder::init_disasm_struct(DISASM& d) {
   d = { 0 };
   // those options are mostly display option for the disassembler engine 
   //d.Options = m_opts;
-  switch (mode_) {
-    case UC_MODE_32:
-      d.Archi = 0;
-      break;
-    case UC_MODE_64:
-      d.Archi = 64;
-      break;
-  }
+  d.Archi = cpu_info.bits;
 }
 
 std::multiset<Gadget*> Rop_finder::find_all_gadget_from_ret(const unsigned char* data, unsigned long long vaddr,
@@ -123,7 +119,7 @@ std::multiset<Gadget*> Rop_finder::find_all_gadget_from_ret(const unsigned char*
         std::string(ending_instr_disasm.Instruction.Mnemonic),
         ending_instr_disasm.EIP - (UIntPtr)data,len_ending_instr ));
 
-      Gadget *gadget = new (std::nothrow) Gadget(mode_,arch_);
+      Gadget *gadget = new (std::nothrow) Gadget(cpu_info);
       if (gadget == NULL)
         printf("Cannot allocate gadget");
 
@@ -278,7 +274,7 @@ std::multiset<Gadget*> Rop_finder::find_gadget_in_memory(const unsigned char* da
       only_ending_instr.push_back(Instruction(std::string(ret_instr.CompleteInstr),
         std::string(ret_instr.Instruction.Mnemonic),offset, len ));
 
-      Gadget *gadget_with_one_instr = new (std::nothrow) Gadget(mode_,arch_);
+      Gadget *gadget_with_one_instr = new (std::nothrow) Gadget(cpu_info);
       if (gadget_with_one_instr == NULL)
         printf("Cannot allocate gadget_with_one_instr");
 
@@ -295,6 +291,10 @@ std::multiset<Gadget*> Rop_finder::find_gadget_in_memory(const unsigned char* da
     }
   }
   return merged_gadgets;
+}
+
+const cpu_info::CPU_description& Rop_finder::get_arch_info() {
+  return cpu_info;
 }
 
 } //namespace findrop_helper
