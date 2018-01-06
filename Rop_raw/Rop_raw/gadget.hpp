@@ -100,7 +100,7 @@ class Gadget { // as RealGadget in script
   };
   const cpu_info::CPU_description& get_arch_info() const { return emu.get_description(); };
   void analize();
-  std::map<std::string, z3::expr_vector> map(std::map<std::string, z3::expr_vector> input_state);
+  std::map<std::string, z3::expr_vector> map(std::map<std::string, z3::expr_vector> input_state, z3::context& z3_context);
  private:
   //TODO: fix level intialization
   std::map <uc_x86_reg, std::vector<std::string>> regs_condition;
