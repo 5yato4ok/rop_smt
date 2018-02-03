@@ -134,25 +134,33 @@ void Gadget::analize() {
 }
 
 std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::expr_vector> input_state, z3::context& z3_context) {
-  std::map<std::string, z3::expr_vector> result;
+  std::map<std::string, z3::expr_vector> out_state;
   if (!is_analized)
-    return result;
-  result = utils::z3_new_state(z3_context, emu.get_description());
-  auto ptr_ip = result.find(emu.get_description().instruction_pointer.begin()->second);
-  auto ptr_constr = result.find("constraints");
+    return out_state;
+  out_state = utils::z3_new_state(z3_context, emu.get_description());
+  auto ptr_ip = out_state.find(emu.get_description().instruction_pointer.begin()->second);
+  auto ptr_constr = out_state.find("constraints");
   ptr_constr->second.push_back(ptr_ip->second[0] == z3_context.int_val(address));
-  auto desc = emu.get_description();
-  auto regs = desc.common_regs_;
   for (auto & reg : regs_condition) {
-	  if (reg.second[0]=="mov") {
-	    auto ptr_reg = result.find(emu.get_description().common_regs_.at(reg.first));
+    //TODO: test it and check it
+    auto ptr_reg = out_state.find(emu.get_description().common_regs_.at(reg.first));
+	  if (reg.second[0]== "mov") {  
+      auto ptr_reg_in = input_state.find(reg.second[1]);
+      //TODO: this probably not right
+      ptr_reg = ptr_reg_in;
     } else if (reg.second[0] == "stack") {
-
-    } else if (reg.second[0] == "junk") {
-
-    }
+      //TODO::here add
+      ptr_reg->second = utils::z3_read_bits(input_state.at("stack"), z3_context, 
+        std::stoi(reg.second[1]) * 8, emu.get_description().bits);
+    } else if (reg.second[0] == "add") {
+      auto value = input_state.at(emu.get_description().common_regs_.at(reg.first));
+      value[0] + z3_context.int_val(std::stoi(reg.second[1]));
+      z3::expr_vector tmp_vector(z3_context);
+      tmp_vector.push_back(value[0] + z3_context.int_val(std::stoi(reg.second[1])));
+      ptr_reg->second = tmp_vector;
+    } 
   }
-  return result;
+  return out_state;
 };
 
 //def map(self, ins) :
