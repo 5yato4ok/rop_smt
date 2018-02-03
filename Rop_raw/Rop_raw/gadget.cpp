@@ -138,8 +138,20 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
   if (!is_analized)
     return result;
   result = utils::z3_new_state(z3_context, emu.get_description());
-  result["constraints"].push_back(result[emu.get_description().instruction_pointer.begin()->second] == address);
-  int smth = 2;
+  auto ptr_ip = result.find(emu.get_description().instruction_pointer.begin()->second);
+  auto ptr_constr = result.find("constraints");
+  ptr_constr->second.push_back(ptr_ip->second[0] == z3_context.int_val(address));
+  auto desc = emu.get_description();
+  auto regs = desc.common_regs_;
+  for (auto & reg : regs_condition) {
+	  if (reg.second[0]=="mov") {
+	    auto ptr_reg = result.find(emu.get_description().common_regs_.at(reg.first));
+    } else if (reg.second[0] == "stack") {
+
+    } else if (reg.second[0] == "junk") {
+
+    }
+  }
   return result;
 };
 
@@ -150,14 +162,14 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
 //outs["constraints"].append(ins[self.arch.ip] == self.address)
 //
 //for reg, action in self.regs.items() :
-//if action[0] == "mov" :
-//outs[reg] = ins[action[1]]
-//elif action[0] == "stack" :
-//outs[reg] = z3_read_bits(ins["stack"], action[1] * 8, self.arch.bits)
-//elif action[0] == "add" :
-//outs[reg] = ins[reg] + action[1]
-//elif action[0] == "junk" :
-//outs[reg] = random.randint(0, 2 * *self.arch.bits)
+	//if action[0] == "mov" :
+	//outs[reg] = ins[action[1]]
+	//elif action[0] == "stack" :
+	//outs[reg] = z3_read_bits(ins["stack"], action[1] * 8, self.arch.bits)
+	//elif action[0] == "add" :
+	//outs[reg] = ins[reg] + action[1]
+	//elif action[0] == "junk" :
+	//outs[reg] = random.randint(0, 2 * *self.arch.bits)
 //
 //if self.move >= 0 :
 //outs["stack"] = z3_read_bits(ins["stack"], self.move * 8)

@@ -17,7 +17,6 @@ bool Sequence_builder::init() {
 std::map<std::string, z3::expr_vector> Sequence_builder::start_map(std::map<std::string, z3::expr_vector> input_state) {
   std::map<std::string, z3::expr_vector> result;
   result = input_state;
-  //TODO: if change iterator will it change the value?
   auto ptr_ip = result.find(rop_mngr.get_arch_info().instruction_pointer.begin()->second);
   auto ptr_stack = z3_state.find("stack");
   ptr_ip->second = utils::z3_read_bits(ptr_stack->second, z3_context, 0, rop_mngr.get_arch_info().bits);
@@ -35,7 +34,7 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
   //TODO: fix this empty vector
   ptr_constraints->second = empty_vector;
   for (auto const & current_gadget : set_of_gadgets) { //probably wrong
-    fini = current_gadget->map(fini);
+    fini = current_gadget->map(fini,z3_context);
   }
   return fini;
 }
