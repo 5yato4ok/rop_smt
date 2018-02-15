@@ -181,23 +181,3 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
   return out_state;
 };
 
-//def map(self, ins) :
-//assert self.analysed
-//outs = dict(ins)
-//outs["constraints"] = list(ins["constraints"])
-//outs["constraints"].append(ins[self.arch.ip] == self.address)
-//
-//for reg, action in self.regs.items() :
-	//if action[0] == "mov" :
-	//outs[reg] = ins[action[1]]
-	//elif action[0] == "stack" :
-	//outs[reg] = z3_read_bits(ins["stack"], action[1] * 8, self.arch.bits)
-	//elif action[0] == "add" :
-	//outs[reg] = ins[reg] + action[1]
-	//elif action[0] == "junk" :
-	//outs[reg] = random.randint(0, 2 * *self.arch.bits)
-//
-//if self.move >= 0 :
-//outs["stack"] = z3_read_bits(ins["stack"], self.move * 8)
-//
-//return outs

@@ -1,5 +1,6 @@
 #include "sequence_builder.h"
 
+//TODO: write description for each function. 
 namespace sequence_helper {
 
 Sequence_builder::Sequence_builder(std::fstream& input, uint32_t m_depth, uint32_t smt_levels):
@@ -39,11 +40,34 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
   z3::expr_vector empty_vector(z3_context);
   //TODO: fix this empty vector
   ptr_constraints->second = empty_vector;
-  for (auto const & current_gadget : set_of_gadgets) { //FIX. Only one gadget
+  for (auto const & current_gadget : set_of_gadgets) {
     fini = current_gadget->map(fini,z3_context);
   }
   return fini;
 }
+
+//TODO: rewrite from python
+//def equal_states(self, a, b) :
+//regs = [a[reg] == b[reg] for reg in self.arch.regs]
+//stack = [Extract(b["stack"].size() - 1, 0, a["stack"]) == b["stack"]]
+//return stack + regs
+//
+//def build_round(self, state) :
+//fini = z3_new_state(self.arch)
+//fini["constraints"] = list(state["constraints"])
+//state = state.copy()
+//state["constraints"] = []
+//  for gadget in self.gadgets :
+//    outs = gadget.map(state)
+//    fini["constraints"].append(z3.Implies(
+//    state[self.arch.ip] == gadget.address,
+//    z3.And(outs["constraints"] + self.equal_states(fini, outs))
+//    ))
+//
+//    fini["constraints"].append(
+//    Or([state[self.arch.ip] == gadget.address for gadget in self.gadgets])
+//    )
+//    return fini
 
 std::map<std::string, z3::expr_vector> Sequence_builder::smt_map(std::map<std::string, z3::expr_vector> input_state) {
   std::map<std::string, z3::expr_vector> result;
@@ -59,6 +83,7 @@ std::map<std::string, z3::expr_vector> Sequence_builder::smt_map(std::map<std::s
 };
 
 void Sequence_builder::map() {
+  //TODO: add some checking
   //TODO: fix multiple maps.are the needed
   z3_state = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   z3_state = start_map(z3_state);
@@ -71,4 +96,30 @@ void Sequence_builder::map() {
 
 }
 
+void Sequence_builder::model() {
+  //TODO: rewrite from python
+  //def model(self) :
+  //  ins = z3_new_state(self.arch)
+  //  outs = self.map(ins)
+  //  s = Solver()
+  //  s.add([
+  //    ins[reg] == 0
+  //    for reg in self.arch.regs
+  //    if reg not in(self.arch.ip, self.arch.sp)
+  //  ])
+  //  s.add(outs["constraints"])
+  //  assert s.check() == sat
+  //  return ins, outs, s.model()
 }
+
+void Sequence_builder::use() {
+  //TODO: rewrite from python
+  //if not model : model = self.model()
+  //  ins, outs, m = model
+  //  stack_size = outs[self.arch.sp] - ins[self.arch.sp]
+  //  stack_size = int(str(m.eval(stack_size)))
+  //  return z3_model_read_bytes(m, ins["stack"], 0, stack_size)
+}
+
+}//namespace sequence_helper
+

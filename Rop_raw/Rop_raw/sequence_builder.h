@@ -6,13 +6,17 @@
 namespace sequence_helper {
 
 class Sequence_builder {
-public:
+ public:
   //SMT_gadget();
   Sequence_builder(std::fstream& input, uint32_t m_depth = 3, uint32_t smt_levels_ = 1); //plus some context
   bool Is_initialized() { return initialized_; };
   std::multiset<Gadget*, Gadget::Sort> get_gadget_listing() { return rop_mngr.get_rop_result(); };
-  void map();
-private:
+  void model();
+  void map(); //TODO
+  void use(); //TODO
+
+ private:
+
   int levels;
   z3::context z3_context;
   findrop_helper::Rop_finder rop_mngr;
@@ -26,4 +30,5 @@ private:
 
 };
 
-}
+}//namespace sequence builder
+
