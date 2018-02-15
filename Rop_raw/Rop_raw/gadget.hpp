@@ -106,7 +106,6 @@ class Gadget { // as RealGadget in script
   std::map <uc_x86_reg, std::vector<std::string>> regs_condition;
   int mov = 0; //clean stack on N bytes
   ropperdis::Emulator emu;
-  int address; //???
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
   unsigned int m_size; /*!< the size in byte of the gadget*/

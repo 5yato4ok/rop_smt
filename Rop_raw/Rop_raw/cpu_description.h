@@ -13,7 +13,8 @@ class CPU_description {
   CPU_description(uc_mode mode, uc_arch arch);
   CPU_description(const CPU_description& copy_value);
   int bits;
-  std::map<uc_x86_reg, std::string> instruction_pointer;
+  //change to container with unique key and value
+  std::map<uc_x86_reg, std::string> instruction_pointer; 
   std::map<uc_x86_reg, std::string> stack_pointer;
   int64_t address_mask;
   int64_t page_mask;

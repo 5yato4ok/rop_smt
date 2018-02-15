@@ -59,7 +59,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>z3\lib\libz3.lib;unicorn\lib\unicorn_static_x86_d.lib;beaengine\lib\BeaEngine_s_d_l.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>z3\lib\z3.lib;unicorn\lib\unicorn_static_x86_d.lib;beaengine\lib\BeaEngine_s_d_l.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>z3\lib\libz3.dll;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

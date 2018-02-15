@@ -86,14 +86,15 @@ std::list<Instruction*> Gadget::get_instructions(void) {
 Instruction* Gadget::get_ending_instruction(void) {
   return m_instructions.back();
 }
-
+#define TEST_VALUE 0x1000
+#define TEST_CODE "\x5B\x5D\xC3"
 //TODO: refactor. separate this function.
 //TODO: make independent on arch. which type use?
 void Gadget::analize() {
   if (!emu.Init_unicorn())
     return;
-  std::string test = "\x5B\x5D\xC3";
-  uc_err result = emu.Map_code(0x1000, test);//(get_first_offset(), get_disassembly());
+  std::string test(TEST_CODE);
+  uc_err result = emu.Map_code(TEST_VALUE, test);//TEST (get_first_offset(), get_disassembly());
   auto arch_description = emu.get_description();
   uint64_t stack = utils::get_random_page(arch_description);
   std::string stack_data = utils::random_str(arch_description.page_size);
@@ -111,7 +112,7 @@ void Gadget::analize() {
     result = emu.Setup_regist(current_reg.first, hex_value);
     init_regs[hex_value] = current_reg.first;
   }
-  result = emu.Run(0x1000, test.size());//(get_first_offset(), get_size())
+  result = emu.Run(TEST_VALUE, test.size());//(get_first_offset(), get_size())
 
   for (auto const& current_reg : arch_description.common_regs_) {
     regs_condition[current_reg.first] = { "junk", "" };
@@ -138,36 +139,44 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
   if (!is_analized)
     return out_state;
   out_state = utils::z3_new_state(z3_context, emu.get_description());
-  auto ptr_ip = out_state.find(emu.get_description().instruction_pointer.begin()->second);
-  auto ptr_stack = out_state.find(emu.get_description().stack_pointer.begin()->second);
-  auto ptr_constr = out_state.find("constraints");
-  ptr_constr->second.push_back(ptr_ip->second[0] == z3_context.int_val(address));
+  auto ptr_ip_out = out_state.find(emu.get_description().instruction_pointer.begin()->second);
+  auto ptr_stack_out = out_state.find(emu.get_description().stack_pointer.begin()->second);
+  auto ptr_constr_out = out_state.find("constraints"); 
+  auto ptr_ip_input = input_state.find(emu.get_description().instruction_pointer.begin()->second);
+
+  //TEST: get_first_offset() or maybe here get_first_absolute_address(void)
+  //We can compare bitvector only by extracting its value.
+
+  auto is_ip_equal_address = ptr_ip_input->second[0].extract(
+    utils::get_bit_vector_size(ptr_ip_input->second[0], z3_context) - 1, 0) == TEST_VALUE;
+  ptr_constr_out->second.push_back(is_ip_equal_address);
+
   for (auto & reg : regs_condition) {
-    //TODO: test it and check it
-    auto ptr_reg = out_state.find(emu.get_description().common_regs_.at(reg.first));
+    auto ptr_reg_out = out_state.find(emu.get_description().common_regs_.at(reg.first));
 	  if (reg.second[0]== "mov") {  
       //auto ptr_reg_in = input_state.find(reg.second[1]);
-      //TODO: this probably not right
       //ptr_reg = ptr_reg_in;
-      ptr_reg->second = input_state.at(reg.second[1]);
+      
+      auto value = emu.get_description().common_regs_.find(reg.second[0]);
+      ptr_reg_out->second = input_state.at(reg.second[0]);
     } else if (reg.second[0] == "stack") {
       //TODO::here add
-      ptr_reg->second = utils::z3_read_bits(input_state.at("stack"), z3_context, 
+      ptr_reg_out->second = utils::z3_read_bits(input_state.at("stack"), z3_context, 
         std::stoi(reg.second[1]) * 8, emu.get_description().bits);
     } else if (reg.second[0] == "add") {
       auto value = input_state.at(emu.get_description().common_regs_.at(reg.first));
       z3::expr_vector tmp_vector(z3_context);
       tmp_vector.push_back(value[0] + z3_context.int_val(std::stoi(reg.second[1])));
-      ptr_reg->second = tmp_vector;
+      ptr_reg_out->second = tmp_vector;
     } else if (reg.second[0] == "junk") {
       z3::expr_vector tmp_vector(z3_context);
       tmp_vector.push_back(z3_context.int_val(utils::random_int(0, 2 * emu.get_description().bits)));
-      ptr_reg->second = tmp_vector;
+      ptr_reg_out->second = tmp_vector;
     }
   }
 
   if (mov >= 0) {
-    ptr_stack->second = utils::z3_read_bits(input_state.at("stack"), z3_context, mov * 8);
+    ptr_stack_out->second = utils::z3_read_bits(input_state.at("stack"), z3_context, mov * 8);
   }
 
   return out_state;
