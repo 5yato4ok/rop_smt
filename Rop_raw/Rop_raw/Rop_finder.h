@@ -14,7 +14,7 @@ namespace findrop_helper{
 class Rop_finder {
  public:
   Rop_finder(std::fstream& input, uint32_t m_depth = 3);
-  std::multiset<Gadget*, Gadget::Sort> get_rop_resuslt() { return found_gadgets; };
+  std::multiset<Gadget*, Gadget::Sort> get_rop_result() { return found_gadgets; };
   
   //TODO smth like that
   //std::multiset<Gadget*>generate_chain(uint32_t levels,input_condition_code)

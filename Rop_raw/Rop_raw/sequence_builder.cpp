@@ -10,7 +10,12 @@ levels(smt_levels),rop_mngr(input,m_depth){
 }
 
 bool Sequence_builder::init() {
-  set_of_gadgets = rop_mngr.get_rop_resuslt();
+  set_of_gadgets = rop_mngr.get_rop_result();
+  for (auto const& gadget : set_of_gadgets) {
+    if (!gadget->analize()) {
+      return false;
+    }
+  }
   return set_of_gadgets.size()!=0;
 }
 
@@ -34,7 +39,7 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
   z3::expr_vector empty_vector(z3_context);
   //TODO: fix this empty vector
   ptr_constraints->second = empty_vector;
-  for (auto const & current_gadget : set_of_gadgets) { //probably wrong.set of gadgets is not initialized
+  for (auto const & current_gadget : set_of_gadgets) { //FIX. Only one gadget
     fini = current_gadget->map(fini,z3_context);
   }
   return fini;

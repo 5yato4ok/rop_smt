@@ -10,7 +10,7 @@ public:
   //SMT_gadget();
   Sequence_builder(std::fstream& input, uint32_t m_depth = 3, uint32_t smt_levels_ = 1); //plus some context
   bool Is_initialized() { return initialized_; };
-  std::multiset<Gadget*, Gadget::Sort> get_gadget_listing() { return rop_mngr.get_rop_resuslt(); };
+  std::multiset<Gadget*, Gadget::Sort> get_gadget_listing() { return rop_mngr.get_rop_result(); };
   void map();
 private:
   int levels;

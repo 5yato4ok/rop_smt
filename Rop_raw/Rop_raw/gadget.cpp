@@ -90,9 +90,9 @@ Instruction* Gadget::get_ending_instruction(void) {
 #define TEST_CODE "\x5B\x5D\xC3"
 //TODO: refactor. separate this function.
 //TODO: make independent on arch. which type use?
-void Gadget::analize() {
+bool Gadget::analize() {
   if (!emu.Init_unicorn())
-    return;
+    return false;
   std::string test(TEST_CODE);
   uc_err result = emu.Map_code(TEST_VALUE, test);//TEST (get_first_offset(), get_disassembly());
   auto arch_description = emu.get_description();
@@ -132,6 +132,7 @@ void Gadget::analize() {
     regs_condition[arch_description.stack_pointer.begin()->first] = { "add", std::to_string(mov) };
   }
   is_analized = true;
+  return true;
 }
 
 std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::expr_vector> input_state, z3::context& z3_context) {
@@ -156,17 +157,15 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
 	  if (reg.second[0]== "mov") {  
       //auto ptr_reg_in = input_state.find(reg.second[1]);
       //ptr_reg = ptr_reg_in;
-      
-      auto value = emu.get_description().common_regs_.find(reg.second[0]);
-      ptr_reg_out->second = input_state.at(reg.second[0]);
-    } else if (reg.second[0] == "stack") {
+      ptr_reg_out->second = input_state.at(emu.get_description().common_regs_.at(reg.first));
+    } else if (reg.second[0] == "stack") { //EIP,EBX, EBP stack mode
       //TODO::here add
       ptr_reg_out->second = utils::z3_read_bits(input_state.at("stack"), z3_context, 
         std::stoi(reg.second[1]) * 8, emu.get_description().bits);
-    } else if (reg.second[0] == "add") {
+    } else if (reg.second[0] == "add") { //EIP mode
       auto value = input_state.at(emu.get_description().common_regs_.at(reg.first));
       z3::expr_vector tmp_vector(z3_context);
-      tmp_vector.push_back(value[0] + z3_context.int_val(std::stoi(reg.second[1])));
+      tmp_vector.push_back(value[0] + std::stoi(reg.second[1]));
       ptr_reg_out->second = tmp_vector;
     } else if (reg.second[0] == "junk") {
       z3::expr_vector tmp_vector(z3_context);

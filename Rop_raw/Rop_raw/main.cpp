@@ -18,9 +18,10 @@ int main() {
   if (smt_mngr.Is_initialized()) {
     result = smt_mngr.get_gadget_listing();
   }
-  std::multiset<Gadget*, Gadget::Sort>::iterator it = result.begin();
-  Gadget* test = *it;
-  test->analize();
+  //TODO: Test what happens if run on same gadget analizing two times
+  //std::multiset<Gadget*, Gadget::Sort>::iterator it = result.begin();
+  //Gadget* test = *it;
+  //test->analize();
   smt_mngr.map();
 
   file.close();
