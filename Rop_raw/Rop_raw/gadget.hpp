@@ -1,6 +1,9 @@
 #ifndef GADGET_HPP
 #define GADGET_HPP
 
+#define TEST_VALUE 0x1000
+#define TEST_CODE "\x5B\x5D\xC3"
+
 #include <list>
 #include <string>
 #include <vector>

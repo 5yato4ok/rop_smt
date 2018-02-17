@@ -86,8 +86,7 @@ std::list<Instruction*> Gadget::get_instructions(void) {
 Instruction* Gadget::get_ending_instruction(void) {
   return m_instructions.back();
 }
-#define TEST_VALUE 0x1000
-#define TEST_CODE "\x5B\x5D\xC3"
+
 //TODO: refactor. separate this function.
 //TODO: make independent on arch. which type use?
 bool Gadget::analize() {
@@ -177,6 +176,8 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
   if (mov >= 0) {
     ptr_stack_out->second = utils::z3_read_bits(input_state.at("stack"), z3_context, mov * 8);
   }
+  //Works here fine
+  int test = out_state.at("constraints").size();
 
   return out_state;
 };
