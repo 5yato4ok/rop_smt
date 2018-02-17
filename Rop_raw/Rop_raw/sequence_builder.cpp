@@ -38,6 +38,10 @@ std::map<std::string, z3::expr_vector> Sequence_builder::equal_states(std::map<s
   std::map<std::string, z3::expr_vector> regs_and_stack;
   //std::map<std::string, z3::expr_vector> stack;
   for (auto& reg : rop_mngr.get_arch_info().common_regs_) {
+    //esp regist gets error.TODO:check why
+    if (reg.second == "esp") {
+      continue;
+    }
     z3::expr comparing = a.at(reg.second)[0] == b.at(reg.second)[0];
     z3::expr_vector comparing_vector(z3_context);
     comparing_vector.push_back(comparing);
@@ -47,6 +51,9 @@ std::map<std::string, z3::expr_vector> Sequence_builder::equal_states(std::map<s
   z3::expr extr_a = a.at("stack")[0].extract(utils::get_bit_vector_size(b.at("stack")[0], z3_context)-1,0);
   //probably need to extract b
   z3::expr cmp = extr_a == b.at("stack")[0];
+  stack.push_back(cmp);
+  regs_and_stack.insert({ "stack", std::forward<z3::expr_vector &>(stack) });
+  //TODO:test on correct values
   return regs_and_stack;
 }
 
@@ -62,6 +69,7 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
   for (auto const & current_gadget : set_of_gadgets) {
     outs = current_gadget->map(input_state,z3_context);
   }
+  equal_states(fini, outs);
   return fini;
 }
 
