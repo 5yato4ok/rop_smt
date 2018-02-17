@@ -20,7 +20,8 @@ class Sequence_builder {
   int levels;
   z3::context z3_context;
   findrop_helper::Rop_finder rop_mngr;
-  std::map<std::string, z3::expr_vector> z3_state;
+  //std::map<std::string, z3::expr_vector> z3_state;
+  std::map<std::string, z3::expr_vector> equal_states(std::map<std::string, z3::expr_vector> a, std::map<std::string, z3::expr_vector> b);
   std::map<std::string, z3::expr_vector> start_map(std::map<std::string, z3::expr_vector> input_state);
   std::map<std::string, z3::expr_vector> smt_map(std::map<std::string, z3::expr_vector> input_state);
   std::map<std::string, z3::expr_vector> build_round(std::map<std::string, z3::expr_vector> input_state);

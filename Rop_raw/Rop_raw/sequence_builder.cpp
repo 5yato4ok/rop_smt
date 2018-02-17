@@ -25,7 +25,7 @@ std::map<std::string, z3::expr_vector> Sequence_builder::start_map(std::map<std:
   std::map<std::string, z3::expr_vector> result;
   result = input_state;
   auto ptr_ip = result.find(rop_mngr.get_arch_info().instruction_pointer.begin()->second);
-  auto ptr_stack = z3_state.find("stack");
+  auto ptr_stack = input_state.find("stack");
   ptr_ip->second = utils::z3_read_bits(ptr_stack->second, z3_context, 0, rop_mngr.get_arch_info().bits);
   auto ptr_sp = result.find(rop_mngr.get_arch_info().stack_pointer.begin()->second);
   ptr_sp->second[0] = ptr_sp->second[0] + (rop_mngr.get_arch_info().bits >> 3);
@@ -33,15 +33,21 @@ std::map<std::string, z3::expr_vector> Sequence_builder::start_map(std::map<std:
   return result;
 };
 
+std::map<std::string, z3::expr_vector> Sequence_builder::equal_states(std::map<std::string, z3::expr_vector> a, std::map<std::string, z3::expr_vector> b) {
+  return a;
+}
+
+
 std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<std::string, z3::expr_vector> input_state) {
   std::map<std::string, z3::expr_vector> fini = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
-  auto ptr_constraints = z3_state.find("constraints");
+  std::map<std::string, z3::expr_vector> outs;
+  auto ptr_constraints = input_state.find("constraints");
   fini.insert({ "constraints", std::forward<z3::expr_vector &>(ptr_constraints->second) });
   z3::expr_vector empty_vector(z3_context);
   //TODO: fix this empty vector
   ptr_constraints->second = empty_vector;
   for (auto const & current_gadget : set_of_gadgets) {
-    fini = current_gadget->map(fini,z3_context);
+    outs = current_gadget->map(input_state,z3_context);
   }
   return fini;
 }
@@ -85,7 +91,7 @@ std::map<std::string, z3::expr_vector> Sequence_builder::smt_map(std::map<std::s
 void Sequence_builder::map() {
   //TODO: add some checking
   //TODO: fix multiple maps.are the needed
-  z3_state = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
+  auto z3_state = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   z3_state = start_map(z3_state);
   z3_state = smt_map(z3_state); // in wich calls build round. in wich calls map for real gadget
 
