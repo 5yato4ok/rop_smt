@@ -34,7 +34,20 @@ std::map<std::string, z3::expr_vector> Sequence_builder::start_map(std::map<std:
 };
 
 std::map<std::string, z3::expr_vector> Sequence_builder::equal_states(std::map<std::string, z3::expr_vector> a, std::map<std::string, z3::expr_vector> b) {
-  return a;
+  //compare values in two states return container with this comparing
+  std::map<std::string, z3::expr_vector> regs_and_stack;
+  //std::map<std::string, z3::expr_vector> stack;
+  for (auto& reg : rop_mngr.get_arch_info().common_regs_) {
+    z3::expr comparing = a.at(reg.second)[0] == b.at(reg.second)[0];
+    z3::expr_vector comparing_vector(z3_context);
+    comparing_vector.push_back(comparing);
+    regs_and_stack.insert({ reg.second, std::forward<z3::expr_vector &>(comparing_vector) });
+  }
+  z3::expr_vector stack(z3_context);
+  z3::expr extr_a = a.at("stack")[0].extract(utils::get_bit_vector_size(b.at("stack")[0], z3_context)-1,0);
+  //probably need to extract b
+  z3::expr cmp = extr_a == b.at("stack")[0];
+  return regs_and_stack;
 }
 
 
