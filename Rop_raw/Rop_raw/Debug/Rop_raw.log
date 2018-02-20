@@ -1,0 +1,23 @@
+﻿Build started 17.02.2018 13:09:09.
+     1>Project "C:\Users\Pyato\Documents\GIT\disera\Rop_raw\Rop_raw\Rop_raw.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Iz3\inc\ /Iunicorn\include\ /Ibeaengine\inc /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /wd4996 /wd4005 /wd4099 /wd4098 /analyze- /errorReport:prompt sequence_builder.cpp
+         sequence_builder.cpp
+     1>c:\users\pyato\documents\git\disera\rop_raw\rop_raw\sequence_builder.cpp(73): warning C4018: '<' : signed/unsigned mismatch
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Pyato\Documents\GIT\disera\Rop_raw\Debug\Rop_raw.exe" /INCREMENTAL /NOLOGO /LIBPATH:z3\lib\libz3.dll z3\lib\z3.lib unicorn\lib\unicorn_static_x86_d.lib beaengine\lib\BeaEngine_s_d_l.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Pyato\Documents\GIT\disera\Rop_raw\Debug\Rop_raw.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Pyato\Documents\GIT\disera\Rop_raw\Debug\Rop_raw.lib" /MACHINE:X86 Debug\cpu_description.obj
+         Debug\Emulator.obj
+         Debug\executable_format.obj
+         Debug\gadget.obj
+         Debug\instruction.obj
+         Debug\main.obj
+         Debug\Rop_finder.obj
+         Debug\section.obj
+         Debug\sequence_builder.obj
+         Debug\utils.obj
+         Rop_raw.vcxproj -> C:\Users\Pyato\Documents\GIT\disera\Rop_raw\Debug\Rop_raw.exe
+     1>Done Building Project "C:\Users\Pyato\Documents\GIT\disera\Rop_raw\Rop_raw\Rop_raw.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:10.09
