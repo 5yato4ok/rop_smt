@@ -51,8 +51,13 @@ void Gadget::add_instructions(std::list<Instruction> &instrs, unsigned long long
 
       /* Build the disassembly instruction per instruction */
       m_disassembly += it->get_disassembly() + " ; ";
+      m_code += it->get_mnemonic();
   }
 }
+
+std::string Gadget::get_code(void) const {
+  return m_code;
+};
 
 unsigned long long Gadget::get_first_offset(void) const {
   return m_instructions.front()->get_offset();
@@ -87,13 +92,65 @@ Instruction* Gadget::get_ending_instruction(void) {
   return m_instructions.back();
 }
 
+void Gadget::print_condition() {
+  int counter_load = 0;
+  int counter_store = 0;
+  int counter_call = 0;
+  int counter_syscall = 0;
+  int counter_adjust = 0;
+  int non_changed = 0;
+  std::vector<std::string> load;
+  std::vector<std::string> store;
+  std::vector<std::string> adjust;
+  for (auto reg : regs_condition) {
+    if (reg.second[0] == "mov") {
+      if (reg.second[1] != emu.get_description().common_regs_.at(reg.first)) {
+        counter_load += 1;
+        load.push_back(emu.get_description().common_regs_.at(reg.first));
+      } else {
+        non_changed += 1;
+      }
+    } else if (reg.second[0] == "add" || reg.second[0] == "stack") {
+      counter_store += 1;
+      store.push_back(emu.get_description().common_regs_.at(reg.first));
+    } else if (reg.second[0] == "junk") {
+      adjust.push_back(emu.get_description().common_regs_.at(reg.first));
+    }
+  }
+  std::cout << "\n******GADGET INSTRUCTION INFO******\n";
+  std::cout << "***NON CHANGED Registers \n*** Total Count: \n" << non_changed << std::endl;
+  std::cout << "***LOAD***\n";
+  std::cout << "  Total count: " << counter_load << std::endl;
+  std::cout << "  Registers: ";
+  for (auto reg : load) {
+    std::cout << reg << ",";
+  }
+  std::cout << "\n***STORE***\n";
+  std::cout << "  Total count: " << counter_store << std::endl;
+  std::cout << "  Registers: ";
+  for (auto reg : store) {
+    std::cout << reg << ",";
+  }
+  std::cout << "\n***CALL***\n";
+  std::cout << "  Total count: " << 0 << std::endl;
+  std::cout << "***Syscall***\n";
+  std::cout << "  Total count: " << 0 << std::endl;
+  std::cout << "***Adjust***\n";
+  std::cout << "  Total count: " << counter_adjust << std::endl;
+  std::cout << "  Registers: ";
+  for (auto reg : adjust) {
+    std::cout << reg << ",";
+  }
+  std::cout << std::endl;
+}
 //TODO: refactor. separate this function.
 //TODO: make independent on arch. which type use?
 bool Gadget::analize() {
   if (!emu.Init_unicorn())
     return false;
   std::string test(TEST_CODE);
-  uc_err result = emu.Map_code(TEST_VALUE, test);//TEST (get_first_offset(), get_disassembly());
+  std::string value_dis = get_code();//TODO: get opcodes not disassemble
+  uc_err result = emu.Map_code(get_first_offset(), get_code());//TEST (get_first_offset(), get_disassembly());
   auto arch_description = emu.get_description();
   uint64_t stack = utils::get_random_page(arch_description);
   std::string stack_data = utils::random_str(arch_description.page_size);
@@ -111,13 +168,15 @@ bool Gadget::analize() {
     result = emu.Setup_regist(current_reg.first, hex_value);
     init_regs[hex_value] = current_reg.first;
   }
-  result = emu.Run(TEST_VALUE, test.size());//(get_first_offset(), get_size())
+  int size_dissasembly = value_dis.size();
+  int size_byte = get_size();
+  result = emu.Run(get_first_offset(), size_byte);//(get_first_offset(), get_size())
 
   for (auto const& current_reg : arch_description.common_regs_) {
     regs_condition[current_reg.first] = { "junk", "" };
     uint32_t val_emu = emu.Get_reg_value(current_reg.first);
     if (init_regs.find(val_emu) != init_regs.end()) {
-      regs_condition[current_reg.first] = { "mov", std::to_string(init_regs[val_emu]) }; //TODO chanage to enum 
+      regs_condition[current_reg.first] = { "mov", arch_description.common_regs_.at(uc_x86_reg(init_regs[val_emu])) };
       continue;
     }
     int32_t offset = utils::gen_find(utils::convert_ascii2string(utils::covert_int2hex(val_emu),16), stack_data);
