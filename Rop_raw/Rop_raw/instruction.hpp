@@ -18,7 +18,8 @@ public:
   *  \param offset: A raw offset (relative to a section) where you can find this instruction
   *  \param size: It is the size of the instruction
   */
-  explicit Instruction(std::string disass, std::string mnemonic, unsigned long long offset, unsigned int size);
+  explicit Instruction(std::string disass, std::string mnemonic,std::string opcodes, 
+    unsigned long long offset, unsigned int size);
 
   ~Instruction(void);
 
@@ -61,12 +62,14 @@ public:
   *  \return the mnemonic of the instruction
   */
   std::string get_mnemonic(void) const;
+  std::string get_opcodes(void) const;
 
 private:
   //condition info
 
   std::string m_disass; /*!< the disassembly of the instruction */
   std::string m_mnemonic; /*!< the mnemonic of the instruction */
+  std::string m_opcodes;
   unsigned long long m_offset; /*!< the offset of the instruction */
   unsigned int m_size; /*!< the size of the instruction */
 };

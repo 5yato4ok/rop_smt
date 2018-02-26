@@ -61,7 +61,6 @@ std::multiset<Gadget*> Rop_finder::find_all_gadget_from_ret(const unsigned char*
   std::multiset<Gadget*> gadgets;
   DISASM dis;
   init_disasm_struct(dis);
-
   /*
   We go back, trying to create the longuest gadget possible with the longuest instructions
   "On INTEL processors, (in IA-32 or intel 64 modes), instruction never exceeds 15 bytes." -- beaengine.org
@@ -90,9 +89,9 @@ std::multiset<Gadget*> Rop_finder::find_all_gadget_from_ret(const unsigned char*
       /* if the instruction isn't valid, let's try the process one byte after */
       if (len_instr == UNKNOWN_OPCODE || is_valid_instruction(dis) == false)
         break;
-
+      std::string opcodes_string((char*)dis.EIP, len_instr);
       list_of_instr.push_back(Instruction(
-        std::string(dis.CompleteInstr), std::string(dis.Instruction.Mnemonic),
+        std::string(dis.CompleteInstr), std::string(dis.Instruction.Mnemonic),opcodes_string,
         dis.EIP - (UIntPtr)data, len_instr));
 
       dis.EIP += len_instr;
@@ -112,11 +111,11 @@ std::multiset<Gadget*> Rop_finder::find_all_gadget_from_ret(const unsigned char*
 
     if (is_a_valid_gadget) {
       /* we have a valid gadget, time to build it ; add the instructions found & finally add the ending instruction */
-
+      std::string opcodes_string((char*)dis.EIP, len_ending_instr);
       /* Don't forget to include the ending instruction in the chain of instruction */
       list_of_instr.push_back(Instruction(
         std::string(ending_instr_disasm.CompleteInstr),
-        std::string(ending_instr_disasm.Instruction.Mnemonic),
+        std::string(ending_instr_disasm.Instruction.Mnemonic),opcodes_string,
         ending_instr_disasm.EIP - (UIntPtr)data,len_ending_instr ));
 
       Gadget *gadget = new (std::nothrow) Gadget(cpu_info);
@@ -131,6 +130,7 @@ std::multiset<Gadget*> Rop_finder::find_all_gadget_from_ret(const unsigned char*
     /* goto the next byte */
     dis.EIP = saved_eip + 1;
     dis.VirtualAddr = saved_vaddr + 1;
+
   }
   return gadgets;
 }
@@ -254,6 +254,7 @@ std::multiset<Gadget*> Rop_finder::find_gadget_in_memory(const unsigned char* da
     dis.SecurityBlock = (UInt32)(size - offset + 1);
 
     int len = Disasm(&dis);
+
     /* I guess we're done ! */
     if (len == OUT_OF_BLOCK)
       break;
@@ -264,7 +265,7 @@ std::multiset<Gadget*> Rop_finder::find_gadget_in_memory(const unsigned char* da
 
     if (is_valid_ending_instruction(dis)) {
       DISASM ret_instr;
-      
+      std::string opcodes_string((char*)(data + offset), len);
       /* Okay I found a RET ; now I can build the gadget */
       ret_instr = dis;
 
@@ -272,7 +273,7 @@ std::multiset<Gadget*> Rop_finder::find_gadget_in_memory(const unsigned char* da
       std::list<Instruction> only_ending_instr;
 
       only_ending_instr.push_back(Instruction(std::string(ret_instr.CompleteInstr),
-        std::string(ret_instr.Instruction.Mnemonic),offset, len ));
+        std::string(ret_instr.Instruction.Mnemonic), opcodes_string,offset, len ));
 
       Gadget *gadget_with_one_instr = new (std::nothrow) Gadget(cpu_info);
       if (gadget_with_one_instr == NULL)

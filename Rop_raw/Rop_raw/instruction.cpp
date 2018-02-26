@@ -1,7 +1,7 @@
 #include "instruction.hpp"
 
-Instruction::Instruction(std::string disass, std::string mnemonic, unsigned long long offset, unsigned int size)
-: m_disass(disass), m_mnemonic(mnemonic), m_offset(offset), m_size(size) {
+Instruction::Instruction(std::string disass, std::string mnemonic, std::string opcodes, unsigned long long offset, unsigned int size)
+: m_disass(disass), m_mnemonic(mnemonic), m_offset(offset), m_size(size), m_opcodes(opcodes) {
 }
 
 Instruction::~Instruction(void) {
@@ -25,4 +25,8 @@ std::string Instruction::get_disassembly(void) const {
 
 std::string Instruction::get_mnemonic(void) const {
   return m_mnemonic;
+}
+
+std::string Instruction::get_opcodes(void) const {
+  return m_opcodes;
 }

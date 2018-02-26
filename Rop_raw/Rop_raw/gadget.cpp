@@ -51,7 +51,7 @@ void Gadget::add_instructions(std::list<Instruction> &instrs, unsigned long long
 
       /* Build the disassembly instruction per instruction */
       m_disassembly += it->get_disassembly() + " ; ";
-      m_code += it->get_mnemonic();
+      m_code += it->get_opcodes();
   }
 }
 
@@ -149,8 +149,8 @@ bool Gadget::analize() {
   if (!emu.Init_unicorn())
     return false;
   std::string test(TEST_CODE);
-  std::string value_dis = get_code();//TODO: get opcodes not disassemble
-  uc_err result = emu.Map_code(get_first_offset(), get_code());//TEST (get_first_offset(), get_disassembly());
+  std::string value_dis = get_code();//TODO: get opcodes not disassemble. Send correct values to RUN
+  uc_err result = emu.Map_code(TEST_VALUE, TEST_CODE);//TEST (get_first_offset(), get_code());
   auto arch_description = emu.get_description();
   uint64_t stack = utils::get_random_page(arch_description);
   std::string stack_data = utils::random_str(arch_description.page_size);
@@ -170,7 +170,7 @@ bool Gadget::analize() {
   }
   int size_dissasembly = value_dis.size();
   int size_byte = get_size();
-  result = emu.Run(get_first_offset(), size_byte);//(get_first_offset(), get_size())
+  result = emu.Run(TEST_VALUE, test.size());//(get_first_offset(), get_size())
 
   for (auto const& current_reg : arch_description.common_regs_) {
     regs_condition[current_reg.first] = { "junk", "" };
