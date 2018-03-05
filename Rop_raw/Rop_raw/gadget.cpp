@@ -149,8 +149,8 @@ bool Gadget::analize() {
   if (!emu.Init_unicorn())
     return false;
   std::string test(TEST_CODE);
-  std::string value_dis = get_code();//TODO: get opcodes not disassemble. Send correct values to RUN
-  uc_err result = emu.Map_code(TEST_VALUE, TEST_CODE);//TEST (get_first_offset(), get_code());
+  std::string value_dis = get_code(); //Add more gadget gategories
+  uc_err result = emu.Map_code(TEST_VALUE, TEST_CODE);
   auto arch_description = emu.get_description();
   uint64_t stack = utils::get_random_page(arch_description);
   std::string stack_data = utils::random_str(arch_description.page_size);
@@ -208,8 +208,13 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
 
   auto is_ip_equal_address = ptr_ip_input->second[0].extract(
     utils::get_bit_vector_size(ptr_ip_input->second[0], z3_context) - 1, 0) == TEST_VALUE;
+  z3::expr_vector const_vec(z3_context);
+  const_vec = ptr_constr_out->second;
+  //Error on doing such thing, so we will create new vector
   ptr_constr_out->second.push_back(is_ip_equal_address);
-
+  //const_vec.push_back(is_ip_equal_address);
+  
+  out_state.insert({ "constraints", std::forward<z3::expr_vector>(const_vec) });
   for (auto & reg : regs_condition) {
     auto ptr_reg_out = out_state.find(emu.get_description().common_regs_.at(reg.first));
 	  if (reg.second[0]== "mov") {  
@@ -235,8 +240,6 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
   if (mov >= 0) {
     ptr_stack_out->second = utils::z3_read_bits(input_state.at("stack"), z3_context, mov * 8);
   }
-  //Works here fine
-  int test = out_state.at("constraints").size();
 
   return out_state;
 };

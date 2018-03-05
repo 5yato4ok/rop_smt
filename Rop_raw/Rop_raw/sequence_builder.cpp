@@ -38,8 +38,17 @@ z3::expr_vector Sequence_builder::equal_states(std::map<std::string, z3::expr_ve
   z3::expr_vector regs_and_stack(z3_context);
   //std::map<std::string, z3::expr_vector> stack;
   for (auto& reg : rop_mngr.get_arch_info().common_regs_) {
-    //esp regist gets error.TODO:check why
+    //esp regist gets error.sizeof of bv is 0. FIX
     if (reg.second == "esp") {
+      int a_size = utils::get_bit_vector_size(a.at("eip")[0], z3_context);
+      int b_size = utils::get_bit_vector_size(b.at("eip")[0], z3_context);
+      continue;
+    }
+    //eip also gets error. sizeof of bv is 0. FIX
+    if (reg.second == "eip") {
+      int smth = 2;
+      int a_size = utils::get_bit_vector_size(a.at("eip")[0], z3_context);
+      int b_size = utils::get_bit_vector_size(b.at("eip")[0], z3_context);
       continue;
     }
     z3::expr comparing = a.at(reg.second)[0] == b.at(reg.second)[0];
@@ -57,24 +66,32 @@ z3::expr_vector Sequence_builder::equal_states(std::map<std::string, z3::expr_ve
 std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<std::string, z3::expr_vector> input_state) {
   std::map<std::string, z3::expr_vector> fini = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   std::map<std::string, z3::expr_vector> outs;
-  auto ptr_constraints = input_state.find("constraints");
-  fini.insert({ "constraints", std::forward<z3::expr_vector &>(ptr_constraints->second) });
+  //auto ptr_constraints = input_state.find("constraints");
+  //fini.insert({ "constraints", std::forward<z3::expr_vector >(ptr_constraints->second) });
   z3::expr_vector empty_vector(z3_context);
   //TODO: fix this empty vector
-  ptr_constraints->second = empty_vector;
+  //ptr_constraints->second = empty_vector;
   for (auto const & current_gadget : set_of_gadgets) {
-    outs = current_gadget->map(input_state,z3_context);
+    outs = current_gadget->map(input_state, z3_context);
     //error in outs vector. vectors are empty.FIX
-    auto eq_states = equal_states(fini, outs);
-    auto ptr_out = outs.find("constarints");
+    auto ptr_out = outs.find("constraints");
     int testvalue = ptr_out->second.size();
+    //TEST
 
-    for (int i = 0; i <outs.at("constarints").size(); i++) {
-      eq_states.push_back(outs.at("constarints")[i]);
+    //should be after eq_states
+    auto eq_states = equal_states(fini, outs);
+    
+    auto ptr_stack = outs.find("stack");
+    int testvalue2 = ptr_stack->second.size();
+    
+
+    for (int i = 0; i < outs.at("constraints").size(); i++) {
+      eq_states.push_back(outs.at("constraints")[i]);
     }
 
     auto ip = rop_mngr.get_arch_info().instruction_pointer.begin()->second;
     //TEST:get_offset or smth like that
+    int size_eip = utils::get_bit_vector_size(input_state.at(ip)[0], z3_context);
     auto is_equal_ip = input_state.at(ip)[0].extract(
       utils::get_bit_vector_size(input_state.at(ip)[0], z3_context) - 1, 0) == TEST_VALUE;
     //Make a one expr from vector by anding it?
@@ -82,11 +99,15 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
     auto implies_constraints = z3::implies(is_equal_ip, and_constraints);
     auto fini_constraints = fini.find("constraints");
     fini_constraints->second.push_back(implies_constraints);
-    int value = fini_constraints->second.size();
+    int value = fini_constraints->second.size(); //test
   }
-  //fini["constraints"].append(
-  //  Or([state[self.arch.ip] == gadget.address for gadget in self.gadgets])
-  //  )
+  auto fini_constraints = fini.find("constraints");
+  for (auto const & current_gadget : set_of_gadgets) {
+    z3::expr eip_eq_address(z3_context);
+    //fini["constraints"].append(
+    //  Or([state[self.arch.ip] == gadget.address for gadget in self.gadgets])
+    //  )
+  }
   return fini;
 }
 
