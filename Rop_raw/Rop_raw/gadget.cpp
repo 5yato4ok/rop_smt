@@ -179,6 +179,9 @@ bool Gadget::analize() {
       regs_condition[current_reg.first] = { "mov", arch_description.common_regs_.at(uc_x86_reg(init_regs[val_emu])) };
       continue;
     }
+    if (current_reg.second == "eip") {
+      int test = 0;
+    }
     int32_t offset = utils::gen_find(utils::convert_ascii2string(utils::covert_int2hex(val_emu),16), stack_data);
     if (offset != -1) {
       regs_condition[current_reg.first] = { "stack", std::to_string(offset) };
@@ -197,7 +200,8 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
   std::map<std::string, z3::expr_vector> out_state;
   if (!is_analized)
     return out_state;
-  out_state = utils::z3_new_state(z3_context, emu.get_description());
+  //out_state = utils::z3_new_state(z3_context, emu.get_description());
+  out_state = input_state;
   auto ptr_ip_out = out_state.find(emu.get_description().instruction_pointer.begin()->second);
   auto ptr_stack_out = out_state.find(emu.get_description().stack_pointer.begin()->second);
   auto ptr_constr_out = out_state.find("constraints"); 
@@ -208,29 +212,25 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
 
   auto is_ip_equal_address = ptr_ip_input->second[0].extract(
     utils::get_bit_vector_size(ptr_ip_input->second[0], z3_context) - 1, 0) == TEST_VALUE;
-  z3::expr_vector const_vec(z3_context);
-  const_vec = ptr_constr_out->second;
-  //Error on doing such thing, so we will create new vector
+
   ptr_constr_out->second.push_back(is_ip_equal_address);
-  //const_vec.push_back(is_ip_equal_address);
-  
-  out_state.insert({ "constraints", std::forward<z3::expr_vector>(const_vec) });
+ 
   for (auto & reg : regs_condition) {
     auto ptr_reg_out = out_state.find(emu.get_description().common_regs_.at(reg.first));
 	  if (reg.second[0]== "mov") {  
       //auto ptr_reg_in = input_state.find(reg.second[1]);
       //ptr_reg = ptr_reg_in;
       ptr_reg_out->second = input_state.at(emu.get_description().common_regs_.at(reg.first));
-    } else if (reg.second[0] == "stack") { //EIP,EBX, EBP stack mode
+    } else if (reg.second[0] == "stack") { 
       //TODO::here add
       ptr_reg_out->second = utils::z3_read_bits(input_state.at("stack"), z3_context, 
         std::stoi(reg.second[1]) * 8, emu.get_description().bits);
-    } else if (reg.second[0] == "add") { //EIP mode
+    } else if (reg.second[0] == "add") { //esp
       auto value = input_state.at(emu.get_description().common_regs_.at(reg.first));
       z3::expr_vector tmp_vector(z3_context);
       tmp_vector.push_back(value[0] + std::stoi(reg.second[1]));
       ptr_reg_out->second = tmp_vector;
-    } else if (reg.second[0] == "junk") {
+    } else if (reg.second[0] == "junk") { //here in junk creating bv_int.TODO:change to bit-vector with random values
       z3::expr_vector tmp_vector(z3_context);
       tmp_vector.push_back(z3_context.int_val(utils::random_int(0, 2 * emu.get_description().bits)));
       ptr_reg_out->second = tmp_vector;
@@ -240,7 +240,6 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
   if (mov >= 0) {
     ptr_stack_out->second = utils::z3_read_bits(input_state.at("stack"), z3_context, mov * 8);
   }
-
   return out_state;
 };
 

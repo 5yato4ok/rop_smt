@@ -38,20 +38,30 @@ z3::expr_vector Sequence_builder::equal_states(std::map<std::string, z3::expr_ve
   z3::expr_vector regs_and_stack(z3_context);
   //std::map<std::string, z3::expr_vector> stack;
   for (auto& reg : rop_mngr.get_arch_info().common_regs_) {
-    //esp regist gets error.sizeof of bv is 0. FIX
-    if (reg.second == "esp") {
-      int a_size = utils::get_bit_vector_size(a.at("eip")[0], z3_context);
-      int b_size = utils::get_bit_vector_size(b.at("eip")[0], z3_context);
-      continue;
+    z3::expr comparing(z3_context);
+    if (a.at(reg.second)[0].is_bv() && b.at(reg.second)[0].is_bv()) {
+      if (utils::get_bit_vector_size(a.at(reg.second)[0], z3_context) !=
+        utils::get_bit_vector_size(b.at(reg.second)[0], z3_context)) {
+        std::cout << "Bit_vector error.Different size comparing.\n";
+        std::cout << "Error in reg:" << reg.second << std::endl;
+        //return regs_and_stack;
+      }
+      if (reg.second == "esp") {
+        //error different size.FIX
+        int size_a = utils::get_bit_vector_size(a.at(reg.second)[0], z3_context);
+        int size_b = utils::get_bit_vector_size(b.at(reg.second)[0], z3_context);
+      }
+      comparing = a.at(reg.second)[0] == b.at(reg.second)[0];
+    } else if (a.at(reg.second)[0].is_int() && b.at(reg.second)[0].is_bv()) {
+      //we need to compare values. It can be only bv_const or int_val. So extracting it
+      auto value_a = a.at(reg.second)[0].get_numeral_int(); //Why intput cant be int64???
+      auto value_b = b.at(reg.second)[0].extract(utils::get_bit_vector_size(b.at(reg.second)[0], z3_context) - 1, 0);
+      comparing = value_a == value_b;
+    } else if (a.at(reg.second)[0].is_bv() && b.at(reg.second)[0].is_int()) {
+      auto value_a = a.at(reg.second)[0].extract(utils::get_bit_vector_size(a.at(reg.second)[0], z3_context) - 1, 0);
+      auto value_b = b.at(reg.second)[0].get_numeral_int();
+      comparing = value_a == value_b;
     }
-    //eip also gets error. sizeof of bv is 0. FIX
-    if (reg.second == "eip") {
-      int smth = 2;
-      int a_size = utils::get_bit_vector_size(a.at("eip")[0], z3_context);
-      int b_size = utils::get_bit_vector_size(b.at("eip")[0], z3_context);
-      continue;
-    }
-    z3::expr comparing = a.at(reg.second)[0] == b.at(reg.second)[0];
     regs_and_stack.push_back(comparing);
   }
   z3::expr extr_a = a.at("stack")[0].extract(utils::get_bit_vector_size(b.at("stack")[0], z3_context)-1,0);
@@ -66,18 +76,19 @@ z3::expr_vector Sequence_builder::equal_states(std::map<std::string, z3::expr_ve
 std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<std::string, z3::expr_vector> input_state) {
   std::map<std::string, z3::expr_vector> fini = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   std::map<std::string, z3::expr_vector> outs;
-  //auto ptr_constraints = input_state.find("constraints");
-  //fini.insert({ "constraints", std::forward<z3::expr_vector >(ptr_constraints->second) });
+  auto ptr_constraints = input_state.find("constraints");
+  fini.insert({ "constraints", std::forward<z3::expr_vector >(ptr_constraints->second) });
   z3::expr_vector empty_vector(z3_context);
   //TODO: fix this empty vector
-  //ptr_constraints->second = empty_vector;
+  ptr_constraints->second = empty_vector;
   for (auto const & current_gadget : set_of_gadgets) {
     outs = current_gadget->map(input_state, z3_context);
     //error in outs vector. vectors are empty.FIX
     auto ptr_out = outs.find("constraints");
     int testvalue = ptr_out->second.size();
     //TEST
-
+    auto ptr_ip_out = outs.find(current_gadget->get_arch_info().instruction_pointer.begin()->second);
+    int eip_test = utils::get_bit_vector_size(ptr_ip_out->second[0], z3_context);
     //should be after eq_states
     auto eq_states = equal_states(fini, outs);
     
