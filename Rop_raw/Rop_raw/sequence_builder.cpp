@@ -103,10 +103,14 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
   }
   auto fini_constraints = fini.find("constraints");
   for (auto const & current_gadget : set_of_gadgets) {
-    z3::expr eip_eq_address(z3_context);
-    //fini["constraints"].append(
-    //  Or([state[self.arch.ip] == gadget.address for gadget in self.gadgets])
-    //  )
+    auto ip = rop_mngr.get_arch_info().instruction_pointer.begin()->second;
+    auto is_equal_ip = input_state.at(ip)[0].extract(
+      utils::get_bit_vector_size(input_state.at(ip)[0], z3_context) - 1, 0) == TEST_VALUE;
+    z3::expr_vector is_ip_vector(z3_context);
+    is_ip_vector.push_back(is_equal_ip);
+    auto fini_constraints = fini.find("constraints");
+    auto or_constraints = z3::mk_or(is_ip_vector);
+    fini_constraints->second.push_back(or_constraints);
   }
   return fini;
 }
