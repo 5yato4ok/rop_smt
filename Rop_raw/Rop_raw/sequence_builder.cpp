@@ -47,7 +47,7 @@ z3::expr_vector Sequence_builder::equal_states(std::map<std::string, z3::expr_ve
         //return regs_and_stack;
       }
       if (reg.second == "esp") {
-        //error different size.FIX
+        //error different size.FIX.they must be equal
         int size_a = utils::get_bit_vector_size(a.at(reg.second)[0], z3_context);
         int size_b = utils::get_bit_vector_size(b.at(reg.second)[0], z3_context);
       }
@@ -83,18 +83,7 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
   ptr_constraints->second = empty_vector;
   for (auto const & current_gadget : set_of_gadgets) {
     outs = current_gadget->map(input_state, z3_context);
-    //error in outs vector. vectors are empty.FIX
-    auto ptr_out = outs.find("constraints");
-    int testvalue = ptr_out->second.size();
-    //TEST
-    auto ptr_ip_out = outs.find(current_gadget->get_arch_info().instruction_pointer.begin()->second);
-    int eip_test = utils::get_bit_vector_size(ptr_ip_out->second[0], z3_context);
-    //should be after eq_states
     auto eq_states = equal_states(fini, outs);
-    
-    auto ptr_stack = outs.find("stack");
-    int testvalue2 = ptr_stack->second.size();
-    
 
     for (int i = 0; i < outs.at("constraints").size(); i++) {
       eq_states.push_back(outs.at("constraints")[i]);
