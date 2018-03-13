@@ -12,7 +12,7 @@ class Sequence_builder {
   bool Is_initialized() { return initialized_; };
   std::multiset<Gadget*, Gadget::Sort> get_gadget_listing() { return rop_mngr.get_rop_result(); };
   void model();
-  void map(); //TODO
+  std::map<std::string, z3::expr_vector> map(); //TODO
   void use(); //TODO
 
  private:

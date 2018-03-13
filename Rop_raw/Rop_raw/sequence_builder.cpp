@@ -36,7 +36,6 @@ std::map<std::string, z3::expr_vector> Sequence_builder::start_map(std::map<std:
 //compare values in two states return container with this comparing
 z3::expr_vector Sequence_builder::equal_states(std::map<std::string, z3::expr_vector> a, std::map<std::string, z3::expr_vector> b) {
   z3::expr_vector regs_and_stack(z3_context);
-  //std::map<std::string, z3::expr_vector> stack;
   for (auto& reg : rop_mngr.get_arch_info().common_regs_) {
     z3::expr comparing(z3_context);
     if (a.at(reg.second)[0].is_bv() && b.at(reg.second)[0].is_bv()) {
@@ -44,12 +43,7 @@ z3::expr_vector Sequence_builder::equal_states(std::map<std::string, z3::expr_ve
         utils::get_bit_vector_size(b.at(reg.second)[0], z3_context)) {
         std::cout << "Bit_vector error.Different size comparing.\n";
         std::cout << "Error in reg:" << reg.second << std::endl;
-        //return regs_and_stack;
-      }
-      if (reg.second == "esp") {
-        //error different size.FIX.they must be equal
-        int size_a = utils::get_bit_vector_size(a.at(reg.second)[0], z3_context);
-        int size_b = utils::get_bit_vector_size(b.at(reg.second)[0], z3_context);
+        return regs_and_stack;
       }
       comparing = a.at(reg.second)[0] == b.at(reg.second)[0];
     } else if (a.at(reg.second)[0].is_int() && b.at(reg.second)[0].is_bv()) {
@@ -65,7 +59,6 @@ z3::expr_vector Sequence_builder::equal_states(std::map<std::string, z3::expr_ve
     regs_and_stack.push_back(comparing);
   }
   z3::expr extr_a = a.at("stack")[0].extract(utils::get_bit_vector_size(b.at("stack")[0], z3_context)-1,0);
-  //probably need to extract b
   z3::expr cmp = extr_a == b.at("stack")[0];
   regs_and_stack.push_back(cmp);
   //TODO:test on correct values
@@ -115,29 +108,6 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
   return fini;
 }
 
-//TODO: rewrite from python
-//def equal_states(self, a, b) :
-//regs = [a[reg] == b[reg] for reg in self.arch.regs]
-//stack = [Extract(b["stack"].size() - 1, 0, a["stack"]) == b["stack"]]
-//return stack + regs
-//
-//def build_round(self, state) :
-//fini = z3_new_state(self.arch)
-//fini["constraints"] = list(state["constraints"])
-//state = state.copy()
-//state["constraints"] = []
-//  for gadget in self.gadgets :
-//    outs = gadget.map(state)
-//    fini["constraints"].append(z3.Implies(
-//    state[self.arch.ip] == gadget.address,
-//    z3.And(outs["constraints"] + self.equal_states(fini, outs))
-//    ))
-//
-//    fini["constraints"].append(
-//    Or([state[self.arch.ip] == gadget.address for gadget in self.gadgets])
-//    )
-//    return fini
-
 std::map<std::string, z3::expr_vector> Sequence_builder::smt_map(std::map<std::string, z3::expr_vector> input_state) {
   std::map<std::string, z3::expr_vector> result;
   result = input_state;
@@ -151,7 +121,7 @@ std::map<std::string, z3::expr_vector> Sequence_builder::smt_map(std::map<std::s
   return result;
 };
 
-void Sequence_builder::map() {
+std::map<std::string, z3::expr_vector> Sequence_builder::map() {
   //TODO: add some checking
   //TODO: fix multiple maps.are the needed
   auto z3_state = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
@@ -166,9 +136,8 @@ void Sequence_builder::map() {
 }
 
 void Sequence_builder::model() {
-  //TODO: rewrite from python
-  //def model(self) :
-  //  ins = z3_new_state(self.arch)
+  auto input_state = map();
+  z3::solver solver(z3_context);
   //  outs = self.map(ins)
   //  s = Solver()
   //  s.add([
