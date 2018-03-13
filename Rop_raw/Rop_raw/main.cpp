@@ -28,8 +28,7 @@ int main() {
   //std::multiset<Gadget*, Gadget::Sort>::iterator it = result.begin();
   //Gadget* test = *it;
   //test->analize();
-  smt_mngr.map();
-
+  smt_mngr.model();
   file.close();
   return 0;
 }

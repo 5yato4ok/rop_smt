@@ -1,10 +1,10 @@
 #include "sequence_builder.h"
-
+#include <assert.h>
 //TODO: write description for each function. 
 namespace sequence_helper {
 
 Sequence_builder::Sequence_builder(std::fstream& input, uint32_t m_depth, uint32_t smt_levels):
-levels(smt_levels),rop_mngr(input,m_depth){
+levels(smt_levels),rop_mngr(input,m_depth) {
   if (init()) {
     initialized_ = true;
   }
@@ -121,10 +121,10 @@ std::map<std::string, z3::expr_vector> Sequence_builder::smt_map(std::map<std::s
   return result;
 };
 
-std::map<std::string, z3::expr_vector> Sequence_builder::map() {
+std::map<std::string, z3::expr_vector> Sequence_builder::map(std::map<std::string, z3::expr_vector> z3_state) {
   //TODO: add some checking
   //TODO: fix multiple maps.are the needed
-  auto z3_state = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
+  //auto z3_state = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   z3_state = start_map(z3_state);
   z3_state = smt_map(z3_state); // in wich calls build round. in wich calls map for real gadget
 
@@ -132,22 +132,40 @@ std::map<std::string, z3::expr_vector> Sequence_builder::map() {
   auto ptr_ip = z3_state.find("constraints");
   size_t tmp = ptr_ip->second.size();
   bool check = ptr_ip->second[0].is_bv();
-
+  return z3_state;
 }
 
-void Sequence_builder::model() {
-  auto input_state = map();
+z3::model Sequence_builder::model() {
+  input_state_ = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
+  out_state_ = map(input_state_);
   z3::solver solver(z3_context);
-  //  outs = self.map(ins)
-  //  s = Solver()
-  //  s.add([
-  //    ins[reg] == 0
-  //    for reg in self.arch.regs
-  //    if reg not in(self.arch.ip, self.arch.sp)
-  //  ])
-  //  s.add(outs["constraints"])
-  //  assert s.check() == sat
-  //  return ins, outs, s.model()
+  for (auto & reg : rop_mngr.get_arch_info().common_regs_) {
+    if (reg.second == rop_mngr.get_arch_info().instruction_pointer.begin()->second) {
+      continue;
+    }
+    z3::expr exp(z3_context);
+    if (out_state_.at(reg.second)[0].is_bv()) {
+      exp = out_state_.at(reg.second)[0].extract(utils::get_bit_vector_size(
+        out_state_.at(reg.second)[0], z3_context) - 1, 0) == 0;
+    } else {
+      exp = out_state_.at(reg.second)[0] == 0;
+    }
+    solver.add(exp);
+  }
+  //z3_expr has no begin, so we have to use this cicle
+  for (int i = 0; i < out_state_.at("constraints").size();i++) {
+    z3::expr exp = out_state_.at("constraints")[i]; //all expr must be bool
+    if (exp.is_bool()) {
+      std::cout << "It's bool";
+    } else if (exp.is_bv()) {
+      std::cout << "It's bit-vector";
+    } else if (exp.is_algebraic()) {
+      std::cout << "It's agebraic";
+    }
+    solver.add(exp);//error here
+  }
+  assert(solver.check() == z3::sat);
+  return solver.get_model();
 }
 
 void Sequence_builder::use() {
