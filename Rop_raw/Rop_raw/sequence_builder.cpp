@@ -156,15 +156,16 @@ z3::model Sequence_builder::model() {
   for (int i = 0; i < out_state_.at("constraints").size();i++) {
     z3::expr exp = out_state_.at("constraints")[i]; //all expr must be bool
     if (exp.is_bool()) {
-      std::cout << "It's bool";
-    } else if (exp.is_bv()) {
-      std::cout << "It's bit-vector";
-    } else if (exp.is_algebraic()) {
-      std::cout << "It's agebraic";
+      solver.add(exp);//error here
     }
-    solver.add(exp);//error here
   }
-  assert(solver.check() == z3::sat);
+  if (solver.check() == z3::sat) {
+    std::cout << "Its working!";
+  } else {
+    //TODO:add valid gadgets and constraints
+    std::cout << "Well, it's not working...";
+    ::ExitProcess(0);
+  }
   return solver.get_model();
 }
 

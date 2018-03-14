@@ -72,7 +72,7 @@ std::map<std::string, z3::expr_vector> z3_new_state(z3::context& context, const 
   z3::expr_vector stack_description_v(context);  
   stack_description_v.push_back(context.bv_const(unique_name("stack").c_str(), arch.page_size * 8));
   z3::expr_vector constraint_description_v(context);
-  constraint_description_v.push_back(context.bv_const("trash", 100)); //TODO: is here ptr to smth?
+  //constraint_description_v.push_back(context.bv_const("trash", 100)); //TODO: is here ptr to smth?
   std::map<std::string, z3::expr_vector> state;
   //state.emplace("stack", stack_description_v);
   state.insert({ "stack", std::forward<z3::expr_vector &>(stack_description_v) });

@@ -1,4 +1,4 @@
-﻿Build started 13.03.2018 9:40:38.
+﻿Build started 14.03.2018 10:00:25.
      1>Project "C:\Users\Pyato\Documents\GIT\disera\Rop_raw\Rop_raw\Rop_raw.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Iz3\inc\ /Iunicorn\include\ /Ibeaengine\inc /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /wd4996 /wd4005 /wd4099 /wd4098 /analyze- /errorReport:prompt sequence_builder.cpp
@@ -21,4 +21,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:07.35
+Time Elapsed 00:00:07.21
