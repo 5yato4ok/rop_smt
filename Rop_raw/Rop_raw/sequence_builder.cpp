@@ -128,6 +128,7 @@ std::map<std::string, z3::expr_vector> Sequence_builder::map(std::map<std::strin
   z3_state = start_map(z3_state);
   z3_state = smt_map(z3_state); // in wich calls build round. in wich calls map for real gadget
 
+
   //checking
   auto ptr_ip = z3_state.find("constraints");
   size_t tmp = ptr_ip->second.size();
@@ -135,9 +136,20 @@ std::map<std::string, z3::expr_vector> Sequence_builder::map(std::map<std::strin
   return z3_state;
 }
 
-z3::model Sequence_builder::model() {
+std::map<std::string, z3::expr_vector> Sequence_builder::map_x86_call(std::map<std::string, z3::expr_vector> z3_state) {
+
+}
+
+void Sequence_builder::x86_call(uintptr_t call_address, std::vector<uintptr_t>args) {
+  //TODO: add for amd64 call
   input_state_ = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   out_state_ = map(input_state_);
+  out_state_ = map_x86_call(input_state_); 
+  model();
+}
+
+z3::model Sequence_builder::model() {
+  //Make somehow
   z3::solver solver(z3_context);
   for (auto & reg : rop_mngr.get_arch_info().common_regs_) {
     if (reg.second == rop_mngr.get_arch_info().instruction_pointer.begin()->second) {
@@ -168,6 +180,7 @@ z3::model Sequence_builder::model() {
   }
   return solver.get_model();
 }
+
 
 void Sequence_builder::use() {
   //TODO: rewrite from python

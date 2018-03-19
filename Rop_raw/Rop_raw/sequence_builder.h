@@ -11,11 +11,14 @@ class Sequence_builder {
   Sequence_builder(std::fstream& input, uint32_t m_depth = 3, uint32_t smt_levels_ = 1); //plus some context
   bool Is_initialized() { return initialized_; };
   std::multiset<Gadget*, Gadget::Sort> get_gadget_listing() { return rop_mngr.get_rop_result(); };
+  void use();
   z3::model model();
-  std::map<std::string, z3::expr_vector> map(std::map<std::string, z3::expr_vector> z3_state); //TODO
-  void use(); //TODO
+  void x86_call(uintptr_t call_address, std::vector<uintptr_t>args); //TODO
 
  private:
+  
+  std::map<std::string, z3::expr_vector> map(std::map<std::string, z3::expr_vector> z3_state); //TODO
+  std::map<std::string, z3::expr_vector> map_x86_call(std::map<std::string, z3::expr_vector> z3_state);
   std::map<std::string, z3::expr_vector> input_state_;
   std::map<std::string, z3::expr_vector> out_state_;
   int levels;
