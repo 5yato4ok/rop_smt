@@ -136,15 +136,36 @@ std::map<std::string, z3::expr_vector> Sequence_builder::map(std::map<std::strin
   return z3_state;
 }
 
-std::map<std::string, z3::expr_vector> Sequence_builder::map_x86_call(std::map<std::string, z3::expr_vector> z3_state) {
-
+std::map<std::string, z3::expr_vector> Sequence_builder::map_x86_call(std::map<std::string, z3::expr_vector> z3_state, 
+  uintptr_t call_address, std::vector<uintptr_t>args) {
+  auto out_state = z3_state;
+  auto ptr_ip_input = z3_state.find(rop_mngr.get_arch_info().instruction_pointer.begin()->second);
+  auto is_ip_equal_address = ptr_ip_input->second[0].extract(
+    utils::get_bit_vector_size(ptr_ip_input->second[0], z3_context) - 1, 0) == (int)call_address;
+  auto ptr_constr_out = out_state.find("constraints");
+  ptr_constr_out->second.push_back(is_ip_equal_address);
+  
+  int mov = 4;
+  auto ptr_stack_out = out_state.find("stack");
+  ptr_stack_out->second = utils::z3_read_bits(z3_state.at("stack"), z3_context, mov * 8);
+  auto ptr_ip_out = out_state.find(rop_mngr.get_arch_info().instruction_pointer.begin()->second);
+  ptr_ip_out->second = utils::z3_read_bits(z3_state.at("stack"), z3_context,0, rop_mngr.get_arch_info().bits);
+  int i = 0;
+  for (auto&arg : args) {
+    int bits = rop_mngr.get_arch_info().bits;
+    z3::expr arg_stack = utils::z3_read_bits(z3_state.at("stack"),z3_context, i * bits, bits)[0];
+    auto is_arg_stack_equal_address = arg_stack.extract(
+      utils::get_bit_vector_size(arg_stack, z3_context) - 1, 0) == (int)arg;
+    ptr_constr_out->second.push_back(is_arg_stack_equal_address);
+  }
+  return out_state;
 }
 
 void Sequence_builder::x86_call(uintptr_t call_address, std::vector<uintptr_t>args) {
   //TODO: add for amd64 call
   input_state_ = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   out_state_ = map(input_state_);
-  out_state_ = map_x86_call(input_state_); 
+  out_state_ = map_x86_call(input_state_,call_address,args); 
   model();
 }
 

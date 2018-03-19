@@ -18,7 +18,8 @@ class Sequence_builder {
  private:
   
   std::map<std::string, z3::expr_vector> map(std::map<std::string, z3::expr_vector> z3_state); //TODO
-  std::map<std::string, z3::expr_vector> map_x86_call(std::map<std::string, z3::expr_vector> z3_state);
+  std::map<std::string, z3::expr_vector> map_x86_call(std::map<std::string, z3::expr_vector> z3_state,
+    uintptr_t call_address, std::vector<uintptr_t>args);
   std::map<std::string, z3::expr_vector> input_state_;
   std::map<std::string, z3::expr_vector> out_state_;
   int levels;
