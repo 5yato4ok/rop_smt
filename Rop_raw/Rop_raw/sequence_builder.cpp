@@ -165,7 +165,7 @@ void Sequence_builder::x86_call(uintptr_t call_address, std::vector<uintptr_t>ar
   //TODO: add for amd64 call
   input_state_ = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   out_state_ = map(input_state_);
-  out_state_ = map_x86_call(input_state_,call_address,args); 
+  out_state_ = map_x86_call(out_state_, call_address, args);
   model();
 }
 
