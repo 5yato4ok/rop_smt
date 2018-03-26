@@ -47,6 +47,9 @@
     <ClCompile Include="sequence_builder.cpp">
       <Filter>rop_mngr</Filter>
     </ClCompile>
+    <ClCompile Include="analizator.cpp">
+      <Filter>gadget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Emulator.h">
@@ -87,6 +90,9 @@
     </ClInclude>
     <ClInclude Include="sequence_builder.h">
       <Filter>rop_mngr</Filter>
+    </ClInclude>
+    <ClInclude Include="analizator.h">
+      <Filter>gadget</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

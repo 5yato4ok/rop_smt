@@ -29,4 +29,4 @@ private:
   bool code_mapped = false;
 };
 
-}// namespace unicorny
+}// namespace ropperdis

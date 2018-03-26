@@ -1,11 +1,11 @@
 #include "gadget.hpp"
 
 Gadget::Gadget(uc_mode uc_mode_, uc_arch uc_arch_) :
-m_size(0),emu(uc_mode_,uc_arch_) {
+m_size(0),cpu_description(cpu_info::CPU_description(uc_mode_, uc_arch_)) {
 }
 
-Gadget::Gadget(const cpu_info::CPU_description& cpu_description) :
-m_size(0), emu(cpu_description) {
+Gadget::Gadget(const cpu_info::CPU_description& cpu_description_) :
+m_size(0), cpu_description(cpu_description_) {
 }
 
 Gadget::~Gadget(void) {
@@ -104,17 +104,17 @@ void Gadget::print_condition() {
   std::vector<std::string> adjust;
   for (auto reg : regs_condition) {
     if (reg.second[0] == "mov") {
-      if (reg.second[1] != emu.get_description().common_regs_.at(reg.first)) {
+      if (reg.second[1] != cpu_description.common_regs_.at(reg.first)) {
         counter_load += 1;
-        load.push_back(emu.get_description().common_regs_.at(reg.first));
+        load.push_back(cpu_description.common_regs_.at(reg.first));
       } else {
         non_changed += 1;
       }
     } else if (reg.second[0] == "add" || reg.second[0] == "stack") {
       counter_store += 1;
-      store.push_back(emu.get_description().common_regs_.at(reg.first));
+      store.push_back(cpu_description.common_regs_.at(reg.first));
     } else if (reg.second[0] == "junk") {
-      adjust.push_back(emu.get_description().common_regs_.at(reg.first));
+      adjust.push_back(cpu_description.common_regs_.at(reg.first));
     }
   }
   std::cout << "\n******GADGET INSTRUCTION INFO******\n";
@@ -143,55 +143,16 @@ void Gadget::print_condition() {
   }
   std::cout << std::endl;
 }
-//TODO: refactor. separate this function.
-//TODO: make independent on arch. which type use?
+
 bool Gadget::analize() {
-  if (!emu.Init_unicorn())
-    return false;
-  std::string test(TEST_CODE);
-  std::string value_dis = get_code(); //Add more gadget gategories
-  uc_err result = emu.Map_code(TEST_VALUE, TEST_CODE);
-  auto arch_description = emu.get_description();
-  uint64_t stack = utils::get_random_page(arch_description);
-  std::string stack_data = utils::random_str(arch_description.page_size);
-  result = emu.Setup_stack(stack, arch_description.page_size, stack_data);
-  std::map<uint32_t, uc_x86_reg> init_regs;
-  for (auto const& current_reg : arch_description.common_regs_) {
-    std::string random_data;
-    if (current_reg.first == arch_description.instruction_pointer.begin()->first ||
-      current_reg.first == arch_description.stack_pointer.begin()->first) {
-      random_data = "";
-      continue;
-    }
-    random_data = utils::random_str(arch_description.bits >> 3);
-    uint64_t hex_value = std::stoll(utils::convert_string2ascii(random_data),0,16);
-    result = emu.Setup_regist(current_reg.first, hex_value);
-    init_regs[hex_value] = current_reg.first;
+  sequence_helper::AnalizeMngr analize_mngr(cpu_description);
+  if (analize_mngr.Is_initialized()) {
+    std::string tmp_code(TEST_CODE);
+    regs_condition = analize_mngr.GetAnalizedState(tmp_code,TEST_VALUE,&mov);
+    is_analized = true;
+    return true;
   }
-  int size_dissasembly = value_dis.size();
-  int size_byte = get_size();
-  result = emu.Run(TEST_VALUE, test.size());//(get_first_offset(), get_size())
-
-  for (auto const& current_reg : arch_description.common_regs_) {
-    regs_condition[current_reg.first] = { "junk", "" };
-    uint32_t val_emu = emu.Get_reg_value(current_reg.first);
-    if (init_regs.find(val_emu) != init_regs.end()) {
-      regs_condition[current_reg.first] = { "mov", arch_description.common_regs_.at(uc_x86_reg(init_regs[val_emu])) };
-      continue;
-    }
-
-    int32_t offset = utils::gen_find(utils::convert_ascii2string(utils::covert_int2hex(val_emu),16), stack_data);
-    if (offset != -1) {
-      regs_condition[current_reg.first] = { "stack", std::to_string(offset) };
-    }
-   }
-
-  if (regs_condition[arch_description.stack_pointer.begin()->first][0] == "junk") {
-    mov = emu.Get_reg_value(arch_description.stack_pointer.begin()->first) - stack;
-    regs_condition[arch_description.stack_pointer.begin()->first] = { "add", std::to_string(mov) };
-  }
-  is_analized = true;
-  return true;
+  return false;
 }
 
 std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::expr_vector> input_state, z3::context& z3_context) {
@@ -200,7 +161,7 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
     return out_state;
   out_state = input_state;
   
-  auto ptr_ip_input = input_state.find(emu.get_description().instruction_pointer.begin()->second);
+  auto ptr_ip_input = input_state.find(cpu_description.instruction_pointer.begin()->second);
 
   //TEST: get_first_offset() or maybe here get_first_absolute_address(void)
   //We can compare bitvector only by extracting its value.
@@ -210,20 +171,20 @@ std::map<std::string, z3::expr_vector> Gadget::map(std::map<std::string, z3::exp
   auto ptr_constr_out = out_state.find("constraints");
   ptr_constr_out->second.push_back(is_ip_equal_address);
   for (auto & reg : regs_condition) {
-    auto ptr_reg_out = out_state.find(emu.get_description().common_regs_.at(reg.first));
+    auto ptr_reg_out = out_state.find(cpu_description.common_regs_.at(reg.first));
 	  if (reg.second[0]== "mov") {  
-      ptr_reg_out->second = input_state.at(emu.get_description().common_regs_.at(reg.first));
+      ptr_reg_out->second = input_state.at(cpu_description.common_regs_.at(reg.first));
     } else if (reg.second[0] == "stack") { 
       ptr_reg_out->second = utils::z3_read_bits(input_state.at("stack"), z3_context, 
-        std::stoi(reg.second[1]) * 8, emu.get_description().bits);
+        std::stoi(reg.second[1]) * 8, cpu_description.bits);
     } else if (reg.second[0] == "add") {
-      auto tmp_expr = input_state.at(emu.get_description().common_regs_.at(reg.first))[0];
+      auto tmp_expr = input_state.at(cpu_description.common_regs_.at(reg.first))[0];
       z3::expr_vector tmp_vector(z3_context);
       tmp_vector.push_back(tmp_expr + std::stoi(reg.second[1]));
       ptr_reg_out->second = tmp_vector;
     } else if (reg.second[0] == "junk") {
       z3::expr_vector tmp_vector(z3_context);
-      tmp_vector.push_back(z3_context.int_val(utils::random_int(0, 2 * emu.get_description().bits)));
+      tmp_vector.push_back(z3_context.int_val(utils::random_int(0, 2 * cpu_description.bits)));
       ptr_reg_out->second = tmp_vector;
     }
   }

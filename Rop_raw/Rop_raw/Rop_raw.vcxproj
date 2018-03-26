@@ -83,6 +83,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="analizator.cpp" />
     <ClCompile Include="cpu_description.cpp" />
     <ClCompile Include="Emulator.cpp" />
     <ClCompile Include="executable_format.cpp" />
@@ -95,6 +96,7 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="analizator.h" />
     <ClInclude Include="cpu_description.h" />
     <ClInclude Include="elf.hpp" />
     <ClInclude Include="elf_struct.hpp" />

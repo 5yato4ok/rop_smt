@@ -12,17 +12,15 @@
 #include <map>
 #include <iterator>
 #include "instruction.hpp"
-#include "Emulator.h"
 #include "utils.h"
 #include <z3++.h>
+#include "analizator.h"
 /*! \class Gadget
 *
 * A gadget is a sequence of instructions that ends by an ending instruction (ret/call/jmp)
 * In order, to keep in memory only *unique* gadgets, each gadget holds a set of offset where you can find
 * the same one.
 */
-
-enum class action : int32_t {MOV, STACK};
 
 //TODO: SMT -gadget make as child class
 class Gadget { // as RealGadget in script
@@ -110,10 +108,10 @@ class Gadget { // as RealGadget in script
   void print_condition();
 private:
   //TODO: fix level intialization
-  std::map <uc_x86_reg, std::vector<std::string>> regs_condition;
+  const cpu_info::CPU_description cpu_description;
+  sequence_helper::GadgetDescription regs_condition;
   std::string m_code;
-  int mov = 0; //clean stack on N bytes
-  ropperdis::Emulator emu;
+  uintptr_t mov = 0; //clean stack on N bytes
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
   unsigned int m_size; /*!< the size in byte of the gadget*/
