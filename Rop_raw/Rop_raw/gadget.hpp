@@ -13,7 +13,6 @@
 #include <iterator>
 #include "instruction.hpp"
 #include "utils.h"
-#include <z3++.h>
 #include "analizator.h"
 /*! \class Gadget
 *
@@ -102,14 +101,16 @@ class Gadget { // as RealGadget in script
       return g->get_disassembly() < d->get_disassembly();
     }
   };
-  const cpu_info::CPU_description& get_arch_info() const { return emu.get_description(); };
-  bool analize();
-  std::map<std::string, z3::expr_vector> map(std::map<std::string, z3::expr_vector> input_state, z3::context& z3_context);
+  const cpu_info::CPU_description& get_arch_info() const { return cpu_description; };
+  //move this two to analizator
+  bool analize(); 
+  sequence_helper::SMTGadgetDescription Gadget::map(sequence_helper::SMTGadgetDescription input_state, z3::context& z3_context);
+  
   void print_condition();
 private:
   //TODO: fix level intialization
   const cpu_info::CPU_description cpu_description;
-  sequence_helper::GadgetDescription regs_condition;
+  sequence_helper::GadgetDescription regs_condition; //TODO:move this to analizator
   std::string m_code;
   uintptr_t mov = 0; //clean stack on N bytes
   bool is_analized = false;

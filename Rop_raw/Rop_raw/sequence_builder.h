@@ -17,19 +17,19 @@ class Sequence_builder {
 
  private:
   
-  std::map<std::string, z3::expr_vector> map(std::map<std::string, z3::expr_vector> z3_state); //TODO
-  std::map<std::string, z3::expr_vector> map_x86_call(std::map<std::string, z3::expr_vector> z3_state,
+   SMTGadgetDescription map(SMTGadgetDescription z3_state); //TODO
+   SMTGadgetDescription map_x86_call(SMTGadgetDescription z3_state,
     uintptr_t call_address, std::vector<uintptr_t>args);
-  std::map<std::string, z3::expr_vector> input_state_;
-  std::map<std::string, z3::expr_vector> out_state_;
+   SMTGadgetDescription input_state_;
+   SMTGadgetDescription out_state_;
   int levels;
   z3::context z3_context;
   findrop_helper::Rop_finder rop_mngr;
   //std::map<std::string, z3::expr_vector> z3_state;
-  z3::expr_vector equal_states(std::map<std::string, z3::expr_vector> a, std::map<std::string, z3::expr_vector> b);
-  std::map<std::string, z3::expr_vector> start_map(std::map<std::string, z3::expr_vector> input_state);
-  std::map<std::string, z3::expr_vector> smt_map(std::map<std::string, z3::expr_vector> input_state);
-  std::map<std::string, z3::expr_vector> build_round(std::map<std::string, z3::expr_vector> input_state);
+  z3::expr_vector equal_states(SMTGadgetDescription a, SMTGadgetDescription b);
+  SMTGadgetDescription start_map(SMTGadgetDescription input_state);
+  SMTGadgetDescription smt_map(SMTGadgetDescription input_state);
+  SMTGadgetDescription build_round(SMTGadgetDescription input_state);
   std::multiset<Gadget*, Gadget::Sort> set_of_gadgets;
   bool initialized_ = false;
   bool init();
