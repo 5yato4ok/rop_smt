@@ -70,7 +70,7 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
   std::map<std::string, z3::expr_vector> fini = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   std::map<std::string, z3::expr_vector> outs;
   auto ptr_constraints = input_state.find("constraints");
-  fini.insert({ "constraints", std::forward<z3::expr_vector >(ptr_constraints->second) });
+  fini.insert({ "constraints", std::forward<z3::expr_vector>(ptr_constraints->second) });
   z3::expr_vector empty_vector(z3_context);
   //TODO: fix this empty vector
   ptr_constraints->second = empty_vector;
@@ -84,7 +84,6 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
 
     auto ip = rop_mngr.get_arch_info().instruction_pointer.begin()->second;
     //TEST:get_offset or smth like that
-    int size_eip = utils::get_bit_vector_size(input_state.at(ip)[0], z3_context);
     auto is_equal_ip = input_state.at(ip)[0].extract(
       utils::get_bit_vector_size(input_state.at(ip)[0], z3_context) - 1, 0) == TEST_VALUE;
     //Make a one expr from vector by anding it?
@@ -92,7 +91,6 @@ std::map<std::string, z3::expr_vector> Sequence_builder::build_round(std::map<st
     auto implies_constraints = z3::implies(is_equal_ip, and_constraints);
     auto fini_constraints = fini.find("constraints");
     fini_constraints->second.push_back(implies_constraints);
-    int value = fini_constraints->second.size(); //test
   }
   auto fini_constraints = fini.find("constraints");
   for (auto const & current_gadget : set_of_gadgets) {
@@ -140,8 +138,15 @@ std::map<std::string, z3::expr_vector> Sequence_builder::map_x86_call(std::map<s
   uintptr_t call_address, std::vector<uintptr_t>args) {
   auto out_state = z3_state;
   auto ptr_ip_input = z3_state.find(rop_mngr.get_arch_info().instruction_pointer.begin()->second);
+  int test_sze = utils::get_bit_vector_size(ptr_ip_input->second[0], z3_context);
   auto is_ip_equal_address = ptr_ip_input->second[0].extract(
     utils::get_bit_vector_size(ptr_ip_input->second[0], z3_context) - 1, 0) == (int)call_address;
+  
+  //TEST.
+  int ip_value = ptr_ip_input->second[0].extract(
+    utils::get_bit_vector_size(ptr_ip_input->second[0], z3_context)-1, 0);
+
+  bool value = is_ip_equal_address.bool_value();
   auto ptr_constr_out = out_state.find("constraints");
   ptr_constr_out->second.push_back(is_ip_equal_address);
   

@@ -13,7 +13,7 @@ class Sequence_builder {
   std::multiset<Gadget*, Gadget::Sort> get_gadget_listing() { return rop_mngr.get_rop_result(); };
   void use();
   z3::model model();
-  void x86_call(uintptr_t call_address, std::vector<uintptr_t>args); //TODO
+  void x86_call(uintptr_t call_address, std::vector<uintptr_t>args = {}); //TODO
 
  private:
   

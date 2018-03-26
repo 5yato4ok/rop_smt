@@ -29,7 +29,7 @@ int main() {
   //Gadget* test = *it;
   //test->analize();
   //smt_mngr.model();
-  smt_mngr.x86_call(0x1000, { 1 });
+  smt_mngr.x86_call(0x1000);
   file.close();
   return 0;
 }

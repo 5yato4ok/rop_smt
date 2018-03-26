@@ -179,9 +179,7 @@ bool Gadget::analize() {
       regs_condition[current_reg.first] = { "mov", arch_description.common_regs_.at(uc_x86_reg(init_regs[val_emu])) };
       continue;
     }
-    if (current_reg.second == "eip") {
-      int test = 0;
-    }
+
     int32_t offset = utils::gen_find(utils::convert_ascii2string(utils::covert_int2hex(val_emu),16), stack_data);
     if (offset != -1) {
       regs_condition[current_reg.first] = { "stack", std::to_string(offset) };
