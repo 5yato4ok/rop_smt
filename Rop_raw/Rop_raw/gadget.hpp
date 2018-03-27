@@ -13,7 +13,6 @@
 #include <iterator>
 #include "instruction.hpp"
 #include "utils.h"
-#include "analizator.h"
 /*! \class Gadget
 *
 * A gadget is a sequence of instructions that ends by an ending instruction (ret/call/jmp)
@@ -103,16 +102,20 @@ class Gadget { // as RealGadget in script
   };
   const cpu_info::CPU_description& get_arch_info() const { return cpu_description; };
   //move this two to analizator
-  bool analize(); 
-  sequence_helper::SMTGadgetDescription Gadget::map(sequence_helper::SMTGadgetDescription input_state, z3::context& z3_context);
+  //bool analize(); 
+  //sequence_helper::SMTGadgetDescription Gadget::map(sequence_helper::SMTGadgetDescription input_state, z3::context& z3_context);
   
   void print_condition();
+  //bool operator <(Gadget rhs) const {
+  //  return m_size< rhs.m_size;
+  //}
+  bool operator <(const Gadget& rhs) const{
+    return m_size< rhs.m_size;
+  }
 private:
   //TODO: fix level intialization
   const cpu_info::CPU_description cpu_description;
-  sequence_helper::GadgetDescription regs_condition; //TODO:move this to analizator
   std::string m_code;
-  uintptr_t mov = 0; //clean stack on N bytes
   bool is_analized = false;
   std::string m_disassembly; /*!< the disassembly of the gadget*/
   unsigned int m_size; /*!< the size in byte of the gadget*/

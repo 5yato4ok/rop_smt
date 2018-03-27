@@ -93,7 +93,7 @@ Instruction* Gadget::get_ending_instruction(void) {
 }
 
 void Gadget::print_condition() {
-  int counter_load = 0;
+  /*int counter_load = 0;
   int counter_store = 0;
   int counter_call = 0;
   int counter_syscall = 0;
@@ -141,22 +141,22 @@ void Gadget::print_condition() {
   for (auto reg : adjust) {
     std::cout << reg << ",";
   }
-  std::cout << std::endl;
+  std::cout << std::endl;*/
 }
 
-bool Gadget::analize() {
-  sequence_helper::AnalizeMngr analize_mngr(cpu_description);
-  if (analize_mngr.Is_initialized()) {
-    std::string tmp_code(TEST_CODE);
-    regs_condition = analize_mngr.GetAnalizedState(tmp_code,TEST_VALUE,&mov);
-    is_analized = true;
-    return true;
-  }
-  return false;
-}
+//bool Gadget::analize() {
+//  sequence_helper::AnalizeMngr analize_mngr(cpu_description);
+//  if (analize_mngr.Is_initialized()) {
+//    std::string tmp_code(TEST_CODE);
+//    regs_condition = analize_mngr.GetAnalizedState(tmp_code,TEST_VALUE,&mov);
+//    is_analized = true;
+//    return true;
+//  }
+//  return false;
+//}
 
-sequence_helper::SMTGadgetDescription Gadget::map(sequence_helper::SMTGadgetDescription input_state, z3::context& z3_context) {
-  sequence_helper::AnalizeMngr analize_mngr(cpu_description);
-  return analize_mngr.GetMappedState(input_state, regs_condition, z3_context, mov, TEST_VALUE);
-};
+//sequence_helper::SMTGadgetDescription Gadget::map(sequence_helper::SMTGadgetDescription input_state, z3::context& z3_context) {
+//  sequence_helper::AnalizeMngr analize_mngr(cpu_description);
+//  return analize_mngr.GetMappedState(input_state, regs_condition, z3_context, mov, TEST_VALUE);
+//};
 

@@ -2,6 +2,7 @@
 #include <set>
 #include <fstream>
 #include <cstdint>
+#include "analizator.h"
 
 namespace sequence_helper {
 
@@ -16,7 +17,9 @@ class Sequence_builder {
   void x86_call(uintptr_t call_address, std::vector<uintptr_t>args = {}); //TODO
 
  private:
-  
+   findrop_helper::Rop_finder rop_mngr;
+   AnalizeMngr analize_mngr;
+
    SMTGadgetDescription map(SMTGadgetDescription z3_state); //TODO
    SMTGadgetDescription map_x86_call(SMTGadgetDescription z3_state,
     uintptr_t call_address, std::vector<uintptr_t>args);
@@ -24,7 +27,7 @@ class Sequence_builder {
    SMTGadgetDescription out_state_;
   int levels;
   z3::context z3_context;
-  findrop_helper::Rop_finder rop_mngr;
+
   //std::map<std::string, z3::expr_vector> z3_state;
   z3::expr_vector equal_states(SMTGadgetDescription a, SMTGadgetDescription b);
   SMTGadgetDescription start_map(SMTGadgetDescription input_state);

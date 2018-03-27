@@ -4,12 +4,26 @@ AnalizeMngr::AnalizeMngr(const cpu_info::CPU_description& cpu_description_) :
 cpu_description(cpu_description_), is_initialized_(cpu_description.is_initialized()) {
 }
 
-GadgetDescription AnalizeMngr::GetAnalizedState(std::string& code, uintptr_t ptr,uintptr_t* stack_move) {
+SMTGadgetDescription AnalizeMngr::MapGadgets(SMTGadgetDescription input_state, z3::context& z3_context, Gadget& gadget) {
+  return get_mapped_state(input_state, gadget, gadgets_descr.at(gadget),z3_context);
+}
+
+bool AnalizeMngr::AnaliseGadgets(std::multiset<Gadget*, Gadget::Sort> gadgets_set) {
+  for (auto gadget : gadgets_set) {
+    gadgets_descr[*gadget] = get_analized_state(*gadget);
+    if (gadgets_descr[*gadget].size() == 0) {
+      return false;
+    }
+  }
+  return gadgets_descr.size() != 0;
+}
+
+GadgetDescription AnalizeMngr::get_analized_state(Gadget gadget) {
   ropperdis::Emulator emu(cpu_description);
   GadgetDescription regs_condition;
   if (!emu.Init_unicorn())
     return regs_condition;
-  uc_err result = emu.Map_code(ptr, code);
+  uc_err result = emu.Map_code(gadget.get_first_absolute_address(), gadget.get_code());
   auto arch_description = emu.get_description();
   uint64_t stack = utils::get_random_page(arch_description);
   std::string stack_data = utils::random_str(arch_description.page_size);
@@ -27,7 +41,7 @@ GadgetDescription AnalizeMngr::GetAnalizedState(std::string& code, uintptr_t ptr
     result = emu.Setup_regist(current_reg.first, hex_value);
     init_regs[hex_value] = current_reg.first;
   }
-  result = emu.Run(ptr, code.size());
+  result = emu.Run(gadget.get_first_absolute_address(), gadget.get_code().size());
 
   for (auto const& current_reg : arch_description.common_regs_) {
     regs_condition[current_reg.first] = { "junk", "" };
@@ -42,20 +56,21 @@ GadgetDescription AnalizeMngr::GetAnalizedState(std::string& code, uintptr_t ptr
       regs_condition[current_reg.first] = { "stack", std::to_string(offset) };
     }
   }
-  *stack_move = get_stack_move(regs_condition,stack,emu);
+  gadget_stack_mov[gadget] = get_stack_move(regs_condition, stack, emu); //TODO: change
   return regs_condition;
 };
-int AnalizeMngr::get_stack_move(GadgetDescription& regs_condition, uintptr_t stack_value, ropperdis::Emulator& emu_) {
+int AnalizeMngr::get_stack_move(GadgetDescription& regs_condition, 
+  uintptr_t stack_value, ropperdis::Emulator& emu_) {
   int mov = 0;
-  if (regs_condition[cpu_description.stack_pointer.begin()->first][0] == "junk") {
+  if (regs_condition.at(cpu_description.stack_pointer.begin()->first)[0] == "junk") {
     mov = emu_.Get_reg_value(cpu_description.stack_pointer.begin()->first) - stack_value;
-    regs_condition[cpu_description.stack_pointer.begin()->first] = { "add", std::to_string(mov) };
+    regs_condition.at(cpu_description.stack_pointer.begin()->first) = { "add", std::to_string(mov) };
   }
   return mov;
 }
 
-SMTGadgetDescription AnalizeMngr::GetMappedState(SMTGadgetDescription input_state, 
-  GadgetDescription& regs_condition, z3::context& z3_context,uintptr_t mov, int code_ptr) {
+SMTGadgetDescription AnalizeMngr::get_mapped_state(SMTGadgetDescription input_state, Gadget& gadget,
+  GadgetDescription primary_descr, z3::context& z3_context) {
   auto out_state = input_state;
   auto ptr_ip_input = input_state.find(cpu_description.instruction_pointer.begin()->second);
 
@@ -63,10 +78,10 @@ SMTGadgetDescription AnalizeMngr::GetMappedState(SMTGadgetDescription input_stat
   //We can compare bitvector only by extracting its value.
 
   auto is_ip_equal_address = ptr_ip_input->second[0].extract(
-    utils::get_bit_vector_size(ptr_ip_input->second[0], z3_context) - 1, 0) == code_ptr;
+    utils::get_bit_vector_size(ptr_ip_input->second[0], z3_context) - 1, 0) == (int)gadget.get_first_absolute_address(); //TODO:fix this
   auto ptr_constr_out = out_state.find("constraints");
   ptr_constr_out->second.push_back(is_ip_equal_address);
-  for (auto & reg : regs_condition) {
+  for (auto & reg : primary_descr) {
     auto ptr_reg_out = out_state.find(cpu_description.common_regs_.at(reg.first));
     if (reg.second[0] == "mov") {
       ptr_reg_out->second = input_state.at(cpu_description.common_regs_.at(reg.first));
@@ -84,9 +99,9 @@ SMTGadgetDescription AnalizeMngr::GetMappedState(SMTGadgetDescription input_stat
       ptr_reg_out->second = tmp_vector;
     }
   }
-  if (mov >= 0) {
+  if (gadget_stack_mov[gadget] >= 0) {
     auto ptr_stack_out = out_state.find("stack");
-    ptr_stack_out->second = utils::z3_read_bits(input_state.at("stack"), z3_context, mov * 8);
+    ptr_stack_out->second = utils::z3_read_bits(input_state.at("stack"), z3_context, gadget_stack_mov[gadget] * 8);
   }
   return out_state;
 }

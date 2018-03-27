@@ -4,7 +4,7 @@
 namespace sequence_helper {
 
 Sequence_builder::Sequence_builder(std::fstream& input, uint32_t m_depth, uint32_t smt_levels):
-levels(smt_levels),rop_mngr(input,m_depth) {
+ levels(smt_levels), rop_mngr(input, m_depth), analize_mngr(rop_mngr.get_arch_info()) {
   if (init()) {
     initialized_ = true;
   }
@@ -12,17 +12,12 @@ levels(smt_levels),rop_mngr(input,m_depth) {
 
 bool Sequence_builder::init() {
   set_of_gadgets = rop_mngr.get_rop_result();
-  for (auto const& gadget : set_of_gadgets) {
-    if (!gadget->analize()) {
-      return false;
-    }
-  }
-  return set_of_gadgets.size()!=0;
+  return analize_mngr.Is_initialized() && analize_mngr.AnaliseGadgets(set_of_gadgets);
 }
 
 
 SMTGadgetDescription Sequence_builder::start_map(SMTGadgetDescription input_state) {
-  std::map<std::string, z3::expr_vector> result;
+  SMTGadgetDescription result;
   result = input_state;
   auto ptr_ip = result.find(rop_mngr.get_arch_info().instruction_pointer.begin()->second);
   auto ptr_stack = input_state.find("stack");
@@ -74,8 +69,8 @@ SMTGadgetDescription Sequence_builder::build_round(SMTGadgetDescription input_st
   z3::expr_vector empty_vector(z3_context);
   //TODO: fix this empty vector
   ptr_constraints->second = empty_vector;
-  for (auto const & current_gadget : set_of_gadgets) {
-    outs = current_gadget->map(input_state, z3_context);
+  for (auto current_gadget : set_of_gadgets) {
+    outs = analize_mngr.MapGadgets(input_state, z3_context, *current_gadget);
     auto eq_states = equal_states(fini, outs);
 
     for (int i = 0; i < outs.at("constraints").size(); i++) {
@@ -125,7 +120,6 @@ SMTGadgetDescription Sequence_builder::map(SMTGadgetDescription z3_state) {
   //auto z3_state = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   z3_state = start_map(z3_state);
   z3_state = smt_map(z3_state); // in wich calls build round. in wich calls map for real gadget
-
 
   //checking
   auto ptr_ip = z3_state.find("constraints");
