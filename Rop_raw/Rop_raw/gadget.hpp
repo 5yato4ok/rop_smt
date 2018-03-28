@@ -1,10 +1,10 @@
 #ifndef GADGET_HPP
 #define GADGET_HPP
 
-#define TEST_VALUE 0x1000
+//#define TEST_VALUE 0x1000
 //#define TEST_CODE "\x5B\x5D\xC3"
 //#define TEST_CODE "\x11\x0B\x00\xE9\xC2\xF5\x01"
-#define TEST_CODE "\x5B\x5D\x83\xC3\x04\xC3"
+//#define TEST_CODE "\x5B\x5D\x83\xC3\x04\xC3"
 
 #include <list>
 #include <string>

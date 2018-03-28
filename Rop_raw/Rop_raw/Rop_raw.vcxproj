@@ -109,6 +109,7 @@
     <ClInclude Include="safeint.hpp" />
     <ClInclude Include="section.hpp" />
     <ClInclude Include="sequence_builder.h" />
+    <ClInclude Include="test_code.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

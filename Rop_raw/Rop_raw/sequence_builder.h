@@ -3,7 +3,7 @@
 #include <fstream>
 #include <cstdint>
 #include "analizator.h"
-
+#include "test_code.h"
 namespace sequence_helper {
 
 class Sequence_builder {
@@ -19,7 +19,6 @@ class Sequence_builder {
  private:
    findrop_helper::Rop_finder rop_mngr;
    AnalizeMngr analize_mngr;
-
    SMTGadgetDescription map(SMTGadgetDescription& z3_state); //TODO
    SMTGadgetDescription map_x86_call(SMTGadgetDescription& z3_state,uintptr_t call_address, std::vector<uintptr_t>args);
    SMTGadgetDescription input_state_;

@@ -94,5 +94,8 @@
     <ClInclude Include="analizator.h">
       <Filter>gadget</Filter>
     </ClInclude>
+    <ClInclude Include="test_code.h">
+      <Filter>rop_mngr</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

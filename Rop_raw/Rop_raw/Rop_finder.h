@@ -15,18 +15,15 @@ class Rop_finder {
  public:
   Rop_finder(std::fstream& input, uint32_t m_depth = 3);
   std::multiset<Gadget*, Gadget::Sort> get_rop_result() { return found_gadgets; };
-  
-  //TODO smth like that
-  //std::multiset<Gadget*>generate_chain(uint32_t levels,input_condition_code)
-  //std::set_condition
+  std::multiset<Gadget*, Gadget::Sort> get_test_result(std::string test_code);
   const cpu_info::CPU_description& get_arch_info();
   bool Initialized() const { return initialized_; }
  private:
    std::vector<Section*> executable_sections;
    std::multiset<Gadget*, Gadget::Sort> find_rop();
-   std::multiset<Gadget*> find_gadget_in_memory(const unsigned char* data, unsigned long long size, 
+   std::multiset<Gadget*> find_gadget_in_memory(const char* data, unsigned long long size, 
      unsigned long long vaddr, uint32_t m_depth = 3);
-  std::multiset<Gadget*>find_all_gadget_from_ret(const unsigned char* data, unsigned long long vaddr, 
+  std::multiset<Gadget*>find_all_gadget_from_ret(const char* data, unsigned long long vaddr, 
     const DISASM& ending_instr_disasm, unsigned int len_ending_instr);
   void init_disasm_struct(DISASM& d);
   bool is_valid_ending_instruction_nasm(DISASM& ending_instr_d);

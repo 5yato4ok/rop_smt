@@ -11,7 +11,7 @@ Sequence_builder::Sequence_builder(std::fstream& input, uint32_t m_depth, uint32
 }
 
 bool Sequence_builder::init() {
-  set_of_gadgets = rop_mngr.get_rop_result();
+  set_of_gadgets = g_TestBin ? rop_mngr.get_test_result(TEST_CODE) : rop_mngr.get_rop_result();
   return analize_mngr.Is_initialized() && analize_mngr.AnaliseGadgets(set_of_gadgets);
 }
 
@@ -80,7 +80,7 @@ SMTGadgetDescription Sequence_builder::build_round(SMTGadgetDescription& input_s
     auto ip = rop_mngr.get_arch_info().instruction_pointer.begin()->second;
     //TEST:get_offset or smth like that
     auto is_equal_ip = input_state.at(ip)[0].extract(
-      utils::get_bit_vector_size(input_state.at(ip)[0], z3_context) - 1, 0) == TEST_VALUE;
+      utils::get_bit_vector_size(input_state.at(ip)[0], z3_context) - 1, 0) == (int)current_gadget->get_first_absolute_address();
     //Make a one expr from vector by anding it?
     auto and_constraints = z3::mk_and(eq_states);
     auto implies_constraints = z3::implies(is_equal_ip, and_constraints);
@@ -91,7 +91,7 @@ SMTGadgetDescription Sequence_builder::build_round(SMTGadgetDescription& input_s
   for (auto const & current_gadget : set_of_gadgets) {
     auto ip = rop_mngr.get_arch_info().instruction_pointer.begin()->second;
     auto is_equal_ip = input_state.at(ip)[0].extract(
-      utils::get_bit_vector_size(input_state.at(ip)[0], z3_context) - 1, 0) == TEST_VALUE;
+      utils::get_bit_vector_size(input_state.at(ip)[0], z3_context) - 1, 0) == (int)current_gadget->get_first_absolute_address();
     z3::expr_vector is_ip_vector(z3_context);
     is_ip_vector.push_back(is_equal_ip);
     auto fini_constraints = fini.find("constraints");

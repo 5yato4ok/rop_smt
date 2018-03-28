@@ -18,7 +18,7 @@ std::multiset<Gadget*, Gadget::Sort> Rop_finder::find_rop() {
     std::cout << "in " << (*it_sec)->get_name() << std::endl;
     unsigned long long va_section = (*it_sec)->get_vaddr();
 
-    std::multiset<Gadget*> gadgets = find_gadget_in_memory((*it_sec)->get_section_buffer(),
+    std::multiset<Gadget*> gadgets = find_gadget_in_memory((const char*)(*it_sec)->get_section_buffer(),
       (*it_sec)->get_size(), va_section, m_depth);
     std::cout << gadgets.size() << " found." << std::endl << std::endl;
 
@@ -56,7 +56,7 @@ void Rop_finder::init_disasm_struct(DISASM& d) {
   d.Archi = cpu_info.bits;
 }
 
-std::multiset<Gadget*> Rop_finder::find_all_gadget_from_ret(const unsigned char* data, unsigned long long vaddr,
+std::multiset<Gadget*> Rop_finder::find_all_gadget_from_ret(const char* data, unsigned long long vaddr,
   const DISASM& ending_instr_disasm, unsigned int len_ending_instr) {
   std::multiset<Gadget*> gadgets;
   DISASM dis;
@@ -241,7 +241,19 @@ bool Rop_finder::is_valid_instruction(DISASM& ending_instr_d) {
     );
 }
 
-std::multiset<Gadget*> Rop_finder::find_gadget_in_memory(const unsigned char* data, 
+std::multiset<Gadget*, Gadget::Sort> Rop_finder::get_test_result(std::string test_code) {
+  std::multiset<Gadget*, Gadget::Sort> gadgets_found;
+  unsigned long long va_section = 0x1000;
+
+  std::multiset<Gadget*> gadgets = find_gadget_in_memory(test_code.c_str(),
+    test_code.size(), va_section, m_depth);
+  std::cout << gadgets.size() << " found." << std::endl << std::endl;
+  for (std::multiset<Gadget*>::iterator it_g = gadgets.begin(); it_g != gadgets.end(); ++it_g)
+    gadgets_found.insert(*it_g);
+  return gadgets_found;
+}
+
+std::multiset<Gadget*> Rop_finder::find_gadget_in_memory(const char* data, 
   unsigned long long size, unsigned long long vaddr, uint32_t m_depth_) {
   m_depth = m_depth_;
   std::multiset<Gadget*> merged_gadgets;
