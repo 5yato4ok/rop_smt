@@ -8,7 +8,7 @@
 *.obj
 *.tlog
 
-# Precompiled Headers
+
 *.gch
 *.pch
 *.ilk
@@ -19,9 +19,10 @@
 *.so
 *.dylib
 
-# Fortran module files
+
 *.mod
 *.smod
+*.ilk
 
 # Executables
 *.out
