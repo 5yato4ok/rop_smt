@@ -30,6 +30,8 @@ Rop_raw.tlog/
 *.app
 
 #Additional
+Rop_raw/Rop_raw/Debug/
+
 *.suo
 *.pdb
 *.user
