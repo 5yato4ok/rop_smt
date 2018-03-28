@@ -16,7 +16,7 @@ bool Sequence_builder::init() {
 }
 
 
-SMTGadgetDescription Sequence_builder::start_map(SMTGadgetDescription input_state) {
+SMTGadgetDescription Sequence_builder::start_map(SMTGadgetDescription& input_state) {
   SMTGadgetDescription result;
   result = input_state;
   auto ptr_ip = result.find(rop_mngr.get_arch_info().instruction_pointer.begin()->second);
@@ -29,7 +29,7 @@ SMTGadgetDescription Sequence_builder::start_map(SMTGadgetDescription input_stat
 };
 
 //compare values in two states return container with this comparing
-z3::expr_vector Sequence_builder::equal_states(SMTGadgetDescription a, SMTGadgetDescription b) {
+z3::expr_vector Sequence_builder::equal_states(SMTGadgetDescription& a, SMTGadgetDescription& b) {
   z3::expr_vector regs_and_stack(z3_context);
   for (auto& reg : rop_mngr.get_arch_info().common_regs_) {
     z3::expr comparing(z3_context);
@@ -61,7 +61,7 @@ z3::expr_vector Sequence_builder::equal_states(SMTGadgetDescription a, SMTGadget
 }
 
 
-SMTGadgetDescription Sequence_builder::build_round(SMTGadgetDescription input_state) {
+SMTGadgetDescription Sequence_builder::build_round(SMTGadgetDescription& input_state) {
   auto fini = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
   SMTGadgetDescription outs;
   auto ptr_constraints = input_state.find("constraints");
@@ -101,7 +101,7 @@ SMTGadgetDescription Sequence_builder::build_round(SMTGadgetDescription input_st
   return fini;
 }
 
-SMTGadgetDescription Sequence_builder::smt_map(SMTGadgetDescription input_state) {
+SMTGadgetDescription Sequence_builder::smt_map(SMTGadgetDescription& input_state) {
   std::map<std::string, z3::expr_vector> result;
   result = input_state;
   z3::expr_vector gadgets_v(z3_context);
@@ -114,7 +114,7 @@ SMTGadgetDescription Sequence_builder::smt_map(SMTGadgetDescription input_state)
   return result;
 };
 
-SMTGadgetDescription Sequence_builder::map(SMTGadgetDescription z3_state) {
+SMTGadgetDescription Sequence_builder::map(SMTGadgetDescription& z3_state) {
   //TODO: add some checking
   //TODO: fix multiple maps.are the needed
   //auto z3_state = utils::z3_new_state(z3_context, rop_mngr.get_arch_info());
@@ -128,7 +128,7 @@ SMTGadgetDescription Sequence_builder::map(SMTGadgetDescription z3_state) {
   return z3_state;
 }
 
-SMTGadgetDescription Sequence_builder::map_x86_call(SMTGadgetDescription z3_state,
+SMTGadgetDescription Sequence_builder::map_x86_call(SMTGadgetDescription& z3_state,
   uintptr_t call_address, std::vector<uintptr_t>args) {
   auto out_state = z3_state;
   auto ptr_ip_input = z3_state.find(rop_mngr.get_arch_info().instruction_pointer.begin()->second);

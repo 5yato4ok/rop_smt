@@ -20,19 +20,18 @@ class Sequence_builder {
    findrop_helper::Rop_finder rop_mngr;
    AnalizeMngr analize_mngr;
 
-   SMTGadgetDescription map(SMTGadgetDescription z3_state); //TODO
-   SMTGadgetDescription map_x86_call(SMTGadgetDescription z3_state,
-    uintptr_t call_address, std::vector<uintptr_t>args);
+   SMTGadgetDescription map(SMTGadgetDescription& z3_state); //TODO
+   SMTGadgetDescription map_x86_call(SMTGadgetDescription& z3_state,uintptr_t call_address, std::vector<uintptr_t>args);
    SMTGadgetDescription input_state_;
    SMTGadgetDescription out_state_;
   int levels;
   z3::context z3_context;
 
   //std::map<std::string, z3::expr_vector> z3_state;
-  z3::expr_vector equal_states(SMTGadgetDescription a, SMTGadgetDescription b);
-  SMTGadgetDescription start_map(SMTGadgetDescription input_state);
-  SMTGadgetDescription smt_map(SMTGadgetDescription input_state);
-  SMTGadgetDescription build_round(SMTGadgetDescription input_state);
+  z3::expr_vector equal_states(SMTGadgetDescription& a, SMTGadgetDescription& b);
+  SMTGadgetDescription start_map(SMTGadgetDescription& input_state);
+  SMTGadgetDescription smt_map(SMTGadgetDescription& input_state);
+  SMTGadgetDescription build_round(SMTGadgetDescription& input_state);
   std::multiset<Gadget*, Gadget::Sort> set_of_gadgets;
   bool initialized_ = false;
   bool init();

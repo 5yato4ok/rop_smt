@@ -17,10 +17,10 @@ class AnalizeMngr {
   AnalizeMngr(const cpu_info::CPU_description& description);
   bool Is_initialized() { return is_initialized_; }
   bool AnaliseGadgets(std::multiset<Gadget*, Gadget::Sort>gadgets_set);
-  SMTGadgetDescription MapGadgets(SMTGadgetDescription input_state, z3::context& z3_context, Gadget& gadget);
+  SMTGadgetDescription MapGadgets(SMTGadgetDescription& input_state, z3::context& z3_context, Gadget& gadget);
  private:
-  SMTGadgetDescription get_mapped_state(SMTGadgetDescription input_state,Gadget& gadget,GadgetDescription primary_descr, z3::context& z3_context);
-  GadgetDescription get_analized_state(Gadget gadget);
+  SMTGadgetDescription get_mapped_state(SMTGadgetDescription& input_state,Gadget& gadget,GadgetDescription& primary_descr, z3::context& z3_context);
+  GadgetDescription get_analized_state(Gadget& gadget);
   std::map<Gadget,GadgetDescription> gadgets_descr;
   std::map<Gadget, int> gadget_stack_mov;
   int get_stack_move(GadgetDescription& regs_condition, uintptr_t stack_move,ropperdis::Emulator& emu_);

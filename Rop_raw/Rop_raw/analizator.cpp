@@ -4,7 +4,7 @@ AnalizeMngr::AnalizeMngr(const cpu_info::CPU_description& cpu_description_) :
 cpu_description(cpu_description_), is_initialized_(cpu_description.is_initialized()) {
 }
 
-SMTGadgetDescription AnalizeMngr::MapGadgets(SMTGadgetDescription input_state, z3::context& z3_context, Gadget& gadget) {
+SMTGadgetDescription AnalizeMngr::MapGadgets(SMTGadgetDescription& input_state, z3::context& z3_context, Gadget& gadget) {
   return get_mapped_state(input_state, gadget, gadgets_descr.at(gadget),z3_context);
 }
 
@@ -18,7 +18,7 @@ bool AnalizeMngr::AnaliseGadgets(std::multiset<Gadget*, Gadget::Sort> gadgets_se
   return gadgets_descr.size() != 0;
 }
 
-GadgetDescription AnalizeMngr::get_analized_state(Gadget gadget) {
+GadgetDescription AnalizeMngr::get_analized_state(Gadget& gadget) {
   ropperdis::Emulator emu(cpu_description);
   GadgetDescription regs_condition;
   if (!emu.Init_unicorn())
@@ -69,8 +69,8 @@ int AnalizeMngr::get_stack_move(GadgetDescription& regs_condition,
   return mov;
 }
 
-SMTGadgetDescription AnalizeMngr::get_mapped_state(SMTGadgetDescription input_state, Gadget& gadget,
-  GadgetDescription primary_descr, z3::context& z3_context) {
+SMTGadgetDescription AnalizeMngr::get_mapped_state(SMTGadgetDescription& input_state, Gadget& gadget,
+  GadgetDescription& primary_descr, z3::context& z3_context) {
   auto out_state = input_state;
   auto ptr_ip_input = input_state.find(cpu_description.instruction_pointer.begin()->second);
 
