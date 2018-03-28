@@ -18,11 +18,12 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-
+Rop_raw.tlog/
 
 *.mod
 *.smod
 *.ilk
+*.log
 
 # Executables
 *.out
