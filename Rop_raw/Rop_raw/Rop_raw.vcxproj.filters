@@ -50,6 +50,9 @@
     <ClCompile Include="analizator.cpp">
       <Filter>gadget</Filter>
     </ClCompile>
+    <ClCompile Include="test_code.cpp">
+      <Filter>rop_mngr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Emulator.h">

@@ -14,7 +14,7 @@ int main() {
   //if (mngr.Initialized()) {
   //  result = mngr.get_rop_resuslt();
   //}
-  sequence_helper::Sequence_builder smt_mngr(file, 3);
+  sequence_helper::Sequence_builder smt_mngr(file, 1);
   if (smt_mngr.Is_initialized()) {
     result = smt_mngr.get_gadget_listing();
   }

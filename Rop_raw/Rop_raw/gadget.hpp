@@ -110,7 +110,8 @@ class Gadget { // as RealGadget in script
   //  return m_size< rhs.m_size;
   //}
   bool operator <(const Gadget& rhs) const{
-    return m_size< rhs.m_size;
+    //return get_disassembly() < rhs.get_disassembly();;
+    return get_first_absolute_address() < rhs.get_first_absolute_address();
   }
 private:
   //TODO: fix level intialization

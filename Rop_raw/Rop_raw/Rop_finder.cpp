@@ -249,7 +249,8 @@ std::multiset<Gadget*, Gadget::Sort> Rop_finder::get_test_result(std::string tes
     test_code.size(), va_section, m_depth);
   std::cout << gadgets.size() << " found." << std::endl << std::endl;
   for (std::multiset<Gadget*>::iterator it_g = gadgets.begin(); it_g != gadgets.end(); ++it_g)
-    gadgets_found.insert(*it_g);
+    if ((*it_g)->get_code() != "\xC3")
+      gadgets_found.insert(*it_g);
   return gadgets_found;
 }
 

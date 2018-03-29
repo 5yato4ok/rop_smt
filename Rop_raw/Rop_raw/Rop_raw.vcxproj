@@ -93,6 +93,7 @@
     <ClCompile Include="Rop_finder.cpp" />
     <ClCompile Include="section.cpp" />
     <ClCompile Include="sequence_builder.cpp" />
+    <ClCompile Include="test_code.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
